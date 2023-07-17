@@ -38,6 +38,10 @@ with app.app_context():
 
 @app.route('/login',methods=['GET'])
 def create_user():
+
+    r1= {"response":"200"}
+    r2= {"response":"404"}
+
     mail=request.args['email']
     password=request.args['password']
 
@@ -45,12 +49,16 @@ def create_user():
     print(k)
     
     if len(k)==0:
+        r={}
+        k={}
         user=Person(mail,password)
         db.session.add(user)
         db.session.commit()
-        return "200 OK"
+    
+        return jsonify(r1)
     else:
-        return "404"
+        print("404 USER ALREADY EXIST")
+        return jsonify(r2)
 
     
 

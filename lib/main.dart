@@ -2330,23 +2330,26 @@ class _SignUpPageState extends State<SignUpPage> {
                         side:
                             BorderSide.none, //Removes border colour from button
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         //After clicking Login
                         email = addEmailController.text;
                         password= addPasswordController.text;
                         print(email);
                         print(password);
                         var url = "http://127.0.0.1:5000/login?email=$email&password=$password";
-                        var value= GetData(url);
+                        var value= await GetData(url);
+                        Map<String,dynamic> l = jsonDecode(value.body.toString());
+                        print(l);
                         print(value);
                         print(url);
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FinancialAccountCreationPage()),
-                        );
+                        if (l["response"]=="200") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    FinancialAccountCreationPage()),
+                          );
+                        };
                       },
                       child: Text('Next')),
                 ),
