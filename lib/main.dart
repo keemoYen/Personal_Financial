@@ -1,5 +1,6 @@
-
+import 'dart:convert';
 import 'dart:io';
+import 'api.dart';
 //import 'package:tuple/tuple.dart';
 import 'dart:developer';
 import 'dart:math';
@@ -8,16 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized(); //Everything here controls size of app when resized
+void main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized(); //Everything here controls size of app when resized
   await windowManager.ensureInitialized();
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(768, 736));
-
   }
   runApp(MyApp());
-}    
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -47,7 +47,12 @@ class MyAppState extends ChangeNotifier {
   var expenseCostList = [];
   var incomeList = [];
   var incomeValueList = [];
-  List<String> creditCardList = <String>['Mastercard', 'Scotia', 'Sagicor', 'Paypal'];
+  List<String> creditCardList = <String>[
+    'Mastercard',
+    'Scotia',
+    'Sagicor',
+    'Paypal'
+  ];
   List<String> marriedOrSingleList = <String>['Single', 'Married'];
   //User Inputs
   double annualincome = 0.00;
@@ -84,36 +89,40 @@ class MyAppState extends ChangeNotifier {
   bool? check10 = false;
   bool? check11 = false;
   bool? check12 = false;
-  
-  void removeExpense(exp){ //Remove clicked Expense from Expense List
+
+  void removeExpense(exp) {
+    //Remove clicked Expense from Expense List
     expenseList.remove(exp);
     //   appState.balance -= appState.expenseCost; // subtract expense from balance
     // appState.spent += appState.expenseCost; // add expense cost to spent
-    balance += double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'),'')); // add removed expense cost to balance [replaceAll is used here to only get the numbers from the String]
-    spent -= double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'),'')); // subtract removed expense cost from spent [replaceAll is used here to only get the numbers from the String]
-    print (double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'),'')));
+    balance += double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'),
+        '')); // add removed expense cost to balance [replaceAll is used here to only get the numbers from the String]
+    spent -= double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'),
+        '')); // subtract removed expense cost from spent [replaceAll is used here to only get the numbers from the String]
+    print(double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'), '')));
     notifyListeners();
   }
 
-  void removeIncome(inc){ //Remove clicked Expense from Expense List
+  void removeIncome(inc) {
+    //Remove clicked Expense from Expense List
     incomeList.remove(inc);
     //   appState.balance -= appState.expenseCost; // subtract expense from balance
     // appState.spent += appState.expenseCost; // add expense cost to spent
-    balance -= double.parse(inc.replaceAll(RegExp(r'[^0-9,.]'),'')); // add removed expense cost to balance [replaceAll is used here to only get the numbers from the String]
-    income -= double.parse(inc.replaceAll(RegExp(r'[^0-9,.]'),'')); // subtract removed expense cost from spent [replaceAll is used here to only get the numbers from the String]
+    balance -= double.parse(inc.replaceAll(RegExp(r'[^0-9,.]'),
+        '')); // add removed expense cost to balance [replaceAll is used here to only get the numbers from the String]
+    income -= double.parse(inc.replaceAll(RegExp(r'[^0-9,.]'),
+        '')); // subtract removed expense cost from spent [replaceAll is used here to only get the numbers from the String]
     //print (double.parse(exp.replaceAll(RegExp(r'[^0-9,.]'),'')));
     notifyListeners();
   }
-
-
 }
+
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     Widget page;
@@ -124,25 +133,28 @@ class _MyHomePageState extends State<MyHomePage> {
     loginpage = LoginPage();
     imagepage = ImagePage();
     return Row(
-        children: <Widget>[
-          Expanded( //Split page
-            flex: 4, //Set how much % of screen page takes up
-            child: Container(
-              color: Colors.green,
-              child: loginpage, //Load Login Page
-            ),
+      children: <Widget>[
+        Expanded(
+          //Split page
+          flex: 4, //Set how much % of screen page takes up
+          child: Container(
+            color: Colors.green,
+            child: loginpage, //Load Login Page
           ),
-          Expanded( //Split page
-            flex: 6, //Set how much % of screen page takes up
-            child: Container(
-              color: Colors.yellow,
-              child: imagepage, //Load Image Page
-            ),
+        ),
+        Expanded(
+          //Split page
+          flex: 6, //Set how much % of screen page takes up
+          child: Container(
+            color: Colors.yellow,
+            child: imagepage, //Load Image Page
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 }
+
 class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -154,16 +166,18 @@ class _LoginPageState extends State<LoginPage> {
     var appState = context.watch<MyAppState>();
     Widget page;
 
-
     return Scaffold(
       body: Column(
         children: [
-
-          SizedBox(height: 10,), //Adds a bit of space between top bar to image
+          SizedBox(
+            height: 10,
+          ), //Adds a bit of space between top bar to image
           Container(
-            padding: EdgeInsets.all(30), //Dictates size of image container i.e. image size basically
+            padding: EdgeInsets.all(
+                30), //Dictates size of image container i.e. image size basically
             width: 80,
-            decoration: BoxDecoration( //Adds logo image to container
+            decoration: BoxDecoration(
+              //Adds logo image to container
               image: DecorationImage(
                 alignment: Alignment.topCenter,
                 fit: BoxFit.fill,
@@ -172,8 +186,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-
-          SizedBox(height:20,), //The Welcome Text and space between Welcome and Logo
+          SizedBox(
+            height: 20,
+          ), //The Welcome Text and space between Welcome and Logo
           Padding(
             padding: const EdgeInsets.only(
               left: 30,
@@ -183,18 +198,19 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Welcome!', 
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Noto Sans',
-                fontSize: 40,
+              child: Text(
+                'Welcome!',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Noto Sans',
+                  fontSize: 40,
+                ),
               ),
-              ),
-              ),
+            ),
           ),
-          
 
-          Padding(          // The text and padding between sub text and username
+          Padding(
+            // The text and padding between sub text and username
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
@@ -202,19 +218,19 @@ class _LoginPageState extends State<LoginPage> {
               bottom: 5,
             ),
             child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Glad to see you're back!", 
-              style: TextStyle(
-                //fontWeight: FontWeight.bold,
-                fontFamily: 'Noto Sans',
-                fontSize: 25,
-              ),
-              )
-              ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Glad to see you're back!",
+                  style: TextStyle(
+                    //fontWeight: FontWeight.bold,
+                    fontFamily: 'Noto Sans',
+                    fontSize: 25,
+                  ),
+                )),
           ),
 
-
-          Padding(          // The text and padding between Email and Email Text Field
+          Padding(
+            // The text and padding between Email and Email Text Field
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
@@ -222,14 +238,15 @@ class _LoginPageState extends State<LoginPage> {
               bottom: 5,
             ),
             child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("E-Mail", 
-              textAlign: TextAlign.left,)
-              ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "E-Mail",
+                  textAlign: TextAlign.left,
+                )),
           ),
-          
 
-          Padding(                          //E-MAIL TEXT FIELD
+          Padding(
+            //E-MAIL TEXT FIELD
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
@@ -239,21 +256,22 @@ class _LoginPageState extends State<LoginPage> {
             child: TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                floatingLabelBehavior: FloatingLabelBehavior
+                    .never, //Removes annoying floating label text on click
                 labelText: 'E-Mail',
-                labelStyle: TextStyle( //Changes label Text Font
-                  fontFamily: 'Nato Sans'
-                ),
+                labelStyle: TextStyle(
+                    //Changes label Text Font
+                    fontFamily: 'Nato Sans'),
                 hintText: 'Enter valid E-Mail',
-                hintStyle: TextStyle( //Changes hint Text Font
-                  fontFamily: 'Nato Sans'
-                ),
+                hintStyle: TextStyle(
+                    //Changes hint Text Font
+                    fontFamily: 'Nato Sans'),
               ),
             ),
           ),
 
-
-          Padding(          // The text and padding between Password and Password Text Field
+          Padding(
+            // The text and padding between Password and Password Text Field
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
@@ -261,15 +279,15 @@ class _LoginPageState extends State<LoginPage> {
               bottom: 5,
             ),
             child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Password", 
-              textAlign: TextAlign.left,
-              )
-              ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Password",
+                  textAlign: TextAlign.left,
+                )),
           ),
 
-
-          Padding(                          //PASSWORD TEXT FIELD
+          Padding(
+            //PASSWORD TEXT FIELD
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
@@ -277,211 +295,217 @@ class _LoginPageState extends State<LoginPage> {
               bottom: 0,
             ),
             child: TextField(
-              obscureText: true, //Adds the Asteriks for Password confidentiality
+              obscureText:
+                  true, //Adds the Asteriks for Password confidentiality
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                floatingLabelBehavior: FloatingLabelBehavior
+                    .never, //Removes annoying floating label text on click
                 labelText: 'Password',
-                labelStyle: TextStyle( //Changes Font
-                  fontFamily: 'Nato Sans'
-                ),
+                labelStyle: TextStyle(
+                    //Changes Font
+                    fontFamily: 'Nato Sans'),
                 hintText: 'Enter your Password',
-                hintStyle: TextStyle( //Changes Font
-                  fontFamily: 'Nato Sans'
-                ),
+                hintStyle: TextStyle(
+                    //Changes Font
+                    fontFamily: 'Nato Sans'),
               ),
             ),
           ),
 
-          Padding(                          //Remember Me and Forgot Password
+          Padding(
+            //Remember Me and Forgot Password
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
               top: 1,
               bottom: 5,
             ),
-            child: Row( //
+            child: Row(
+              //
               children: [
+                //Remember Me Section
 
-              //Remember Me Section
-
-                Checkbox(
-                  value: false,
-                  onChanged: (null)
-                  ),   
-                Text('Remember Me',
+                Checkbox(value: false, onChanged: (null)),
+                Text(
+                  'Remember Me',
                   style: TextStyle(fontFamily: 'Nato Sans'),
                 ),
 
-              //Forgot Password Section
+                //Forgot Password Section
 
-              Expanded( //Huuuuuge gap for aesthetics
-                child: Align( //Put that boy all the way on the right
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: (){ 
-                      // Do thing after they press this
-                    },
-                    style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all(Colors.transparent), //Removes highlight when hovering on 'Forgot Password'
-                    ),
-                
-                    child: Text( //Do password text with underline (really tedius way to do without clipping underline with text)
-                      "Forgot Password?",
-                      style: TextStyle(
-                        shadows: [
-                          Shadow(
-                              color: Theme.of(context).colorScheme.primary, //colour of text (it's a shadow, ik, but it works)
-                              offset: Offset(0, -1))
-                        ],
-                        color: Colors.transparent,
-                        decoration:
-                        TextDecoration.underline,
-                        decorationColor: Theme.of(context).colorScheme.primary,
-                        decorationThickness: 1,
+                Expanded(
+                  //Huuuuuge gap for aesthetics
+                  child: Align(
+                    //Put that boy all the way on the right
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Do thing after they press this
+                      },
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors
+                            .transparent), //Removes highlight when hovering on 'Forgot Password'
+                      ),
+                      child: Text(
+                        //Do password text with underline (really tedius way to do without clipping underline with text)
+                        "Forgot Password?",
+                        style: TextStyle(
+                          shadows: [
+                            Shadow(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary, //colour of text (it's a shadow, ik, but it works)
+                                offset: Offset(0, -1))
+                          ],
+                          color: Colors.transparent,
+                          decoration: TextDecoration.underline,
+                          decorationColor:
+                              Theme.of(context).colorScheme.primary,
+                          decorationThickness: 1,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-
               ],
-
             ),
           ),
 
-
-          Padding(                          //LOGIN BUTTON
+          Padding(
+            //LOGIN BUTTON
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
               top: 0,
               bottom: 5,
             ),
-            child: SizedBox( //Box inwhich button is kept within to control size
+            child: SizedBox(
+              //Box inwhich button is kept within to control size
               width: 500,
               height: 50,
               child: OutlinedButton(
-                style: OutlinedButton.styleFrom( //Style button to make it more rectangular but with rounded edges
-                  backgroundColor: Theme.of(context).colorScheme.onBackground,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  side: BorderSide.none, //Removes border colour from button
-                ),
-                onPressed: (){ //After clicking Login
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainPage()), //Goes to main page
-                  );
-                }, 
-                child: Text('Login')),
+                  style: OutlinedButton.styleFrom(
+                    //Style button to make it more rectangular but with rounded edges
+                    backgroundColor: Theme.of(context).colorScheme.onBackground,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    side: BorderSide.none, //Removes border colour from button
+                  ),
+                  onPressed: () {
+                    //After clicking Login
+                    print("button pushed");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainPage()), //Goes to main page
+                    );
+                  },
+                  child: Text('Login')),
             ),
           ),
 
-
-          Padding(                          //OR Text with Horizontal Lines
+          Padding(
+            //OR Text with Horizontal Lines
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
               top: 1,
               bottom: 5,
             ),
-            child: Row( //OR with Horizontal Text using Expanded Row Dividers
+            child: Row(
+              //OR with Horizontal Text using Expanded Row Dividers
               children: [
-              Expanded(
-                  child: Divider()
-              ),       
-
-              Text(" OR "),        
-
-              Expanded(
-                  child: Divider()
-              ),
+                Expanded(child: Divider()),
+                Text(" OR "),
+                Expanded(child: Divider()),
               ],
-
             ),
           ),
-          
 
-          Padding(                          //ALTERNATIVE LOGIN BUTTON
+          Padding(
+            //ALTERNATIVE LOGIN BUTTON
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
               top: 0,
               bottom: 5,
             ),
-            child: SizedBox( //Box inwhich button is kept within to control size
+            child: SizedBox(
+              //Box inwhich button is kept within to control size
               width: 500,
-              height: 50,
+              height: 47,
               child: OutlinedButton(
-                style: OutlinedButton.styleFrom( //Style button to make it more rectangular but with rounded edges
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  side: BorderSide.none, //Removes border colour from button
-                ),
-                onPressed: (){}, 
-                child: Text('Login with Google')),
+                  style: OutlinedButton.styleFrom(
+                    //Style button to make it more rectangular but with rounded edges
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    side: BorderSide.none, //Removes border colour from button
+                  ),
+                  onPressed: () {},
+                  child: Text('Login with Google')),
             ),
           ),
 
-
-
-          Padding(                          //Don't have an account? Sign up!
+          Padding(
+            //Don't have an account? Sign up!
             padding: const EdgeInsets.only(
               left: 30,
               right: 20,
               top: 1,
               bottom: 5,
             ),
-            child: Row( // 'Don't have an account?' Sign Up Text and Button
+            child: Row(
+              // 'Don't have an account?' Sign Up Text and Button
               children: [
-              Text("Don't have an account?"),     
-              TextButton(
-                onPressed: (){ 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()), //Goes to sign up page
-                  );
-                  // Do thing after they press this
-                },
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent), //Removes highlight when hovering on 'Forgot Password'
-                ),
-
-                child: Text( //Do password text with underline (really tedius way to do without clipping underline with text)
-                  "Sign up!",
-                  style: TextStyle(
-                    shadows: [
-                      Shadow(
-                          color: Theme.of(context).colorScheme.primary, //colour of text (it's a shadow, ik, but it works)
-                          offset: Offset(0, -1))
-                    ],
-                    color: Colors.transparent,
-                    decoration:
-                    TextDecoration.underline,
-                    decorationColor: Theme.of(context).colorScheme.primary,
-                    decorationThickness: 1,
+                Text("Don't have an account?"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SignUpPage()), //Goes to sign up page
+                    );
+                    // Do thing after they press this
+                  },
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(Colors
+                        .transparent), //Removes highlight when hovering on 'Forgot Password'
+                  ),
+                  child: Text(
+                    //Do password text with underline (really tedius way to do without clipping underline with text)
+                    "Sign up!",
+                    style: TextStyle(
+                      shadows: [
+                        Shadow(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary, //colour of text (it's a shadow, ik, but it works)
+                            offset: Offset(0, -1))
+                      ],
+                      color: Colors.transparent,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Theme.of(context).colorScheme.primary,
+                      decorationThickness: 1,
+                    ),
                   ),
                 ),
-              ),   
-
               ],
-
             ),
           ),
-
         ],
       ),
     );
-    
   }
 }
-class ImagePage extends StatelessWidget{
 
+class ImagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    
     var theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
 
@@ -495,10 +519,10 @@ class ImagePage extends StatelessWidget{
         ),
       ),
     );
-
   }
 }
-class MainPage extends StatefulWidget{
+
+class MainPage extends StatefulWidget {
   @override
   State<MainPage> createState() => _MainPageState();
 }
@@ -507,26 +531,26 @@ class _MainPageState extends State<MainPage> {
   int chosenIndex = 0;
   @override
   Widget build(BuildContext context) {
-  Widget? page;
-  switch (chosenIndex) {
-    case 0:
-      page = HomeMenu();
-      break;
-    case 1:
-      page = DashboardPage();
-      break;
-    case 2:
-      page = BudgetPage(); //Budget Planner Page
-      break;
-    case 3:
-      page = Placeholder();
-      break;
-    case 4:
-      page = null; //Logout
-      break;
-    default:
-      throw UnimplementedError('no widget for $chosenIndex');
-  }
+    Widget? page;
+    switch (chosenIndex) {
+      case 0:
+        page = HomeMenu();
+        break;
+      case 1:
+        page = DashboardPage();
+        break;
+      case 2:
+        page = BudgetPage(); //Budget Planner Page
+        break;
+      case 3:
+        page = Placeholder();
+        break;
+      case 4:
+        page = null; //Logout
+        break;
+      default:
+        throw UnimplementedError('no widget for $chosenIndex');
+    }
     return Scaffold(
       body: SafeArea(
         child: Row(
@@ -542,64 +566,69 @@ class _MainPageState extends State<MainPage> {
                 extended: false,
                 labelType: NavigationRailLabelType.selected,
                 destinations: [
-                  NavigationRailDestination( // HOME
+                  NavigationRailDestination(
+                    // HOME
                     icon: Icon(Icons.home_outlined),
                     selectedIcon: Icon(Icons.home_rounded),
                     label: Text('Home'),
                   ),
-                  NavigationRailDestination( //DASHBOARD
+                  NavigationRailDestination(
+                    //DASHBOARD
                     icon: Icon(Icons.space_dashboard_outlined),
                     selectedIcon: Icon(Icons.space_dashboard),
                     label: Text('Dashboard'),
                   ),
-                  NavigationRailDestination( //PLACEHOLDER
+                  NavigationRailDestination(
+                    //PLACEHOLDER
                     icon: Icon(Icons.account_balance_wallet_outlined),
                     selectedIcon: Icon(Icons.account_balance_wallet),
                     label: Text('Placeholder'),
                   ),
-                  NavigationRailDestination( //SETTINGS
+                  NavigationRailDestination(
+                    //SETTINGS
                     icon: Icon(Icons.settings_outlined),
                     selectedIcon: Icon(Icons.settings),
                     label: Text('Settings'),
                   ),
-                  NavigationRailDestination( //LOGOUT
+                  NavigationRailDestination(
+                    //LOGOUT
                     icon: Icon(Icons.logout_outlined),
                     selectedIcon: Icon(Icons.logout),
                     label: Text('Logout'),
                   ),
                 ],
                 selectedIndex: chosenIndex,
-                onDestinationSelected: (value) { // When an option is selected do something
-                  if (value == 4){ //If user selects Logout, first page starts at 0 remember
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                onDestinationSelected: (value) {
+                  // When an option is selected do something
+                  if (value == 4) {
+                    //If user selects Logout, first page starts at 0 remember
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomePage()),
                     );
-                  }
-                  else{ // Else, go to given page associated with value in switch statement
-                    setState(() { 
-                    chosenIndex = value;
-                  });
+                  } else {
+                    // Else, go to given page associated with value in switch statement
+                    setState(() {
+                      chosenIndex = value;
+                    });
                   }
                 },
               ),
             ),
-          
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
+              ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
   }
 }
 
-class HomeMenu extends StatefulWidget{
-
+class HomeMenu extends StatefulWidget {
   @override
   State<HomeMenu> createState() => _HomeMenuState();
 }
@@ -607,7 +636,6 @@ class HomeMenu extends StatefulWidget{
 class _HomeMenuState extends State<HomeMenu> {
   @override
   Widget build(BuildContext context) {
-    
     var theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
     final usdController = TextEditingController();
@@ -620,180 +648,188 @@ class _HomeMenuState extends State<HomeMenu> {
     //var count2;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 241, 238, 238),
-      body: SingleChildScrollView(
-        child: Container(
-
-          //  HOME PAGE IMAGE
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            image: DecorationImage(
-              image: AssetImage('assets/images/home_background6.jpg'),
-              opacity: 0.9,
-              fit: BoxFit.cover,
+        backgroundColor: Color.fromARGB(255, 241, 238, 238),
+        body: SingleChildScrollView(
+          child: Container(
+            //  HOME PAGE IMAGE
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              image: DecorationImage(
+                image: AssetImage('assets/images/home_background6.jpg'),
+                opacity: 0.9,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
 
-          child: Column(
-            children: [
-              Padding( // HOME HEADING
-                padding: const EdgeInsets.only(
-                  left: 50,
-                  right: 0,
-                  top: 10,
-                  bottom: 0,
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Home",
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
+            child: Column(
+              children: [
+                Padding(
+                  // HOME HEADING
+                  padding: const EdgeInsets.only(
+                    left: 50,
+                    right: 0,
+                    top: 10,
+                    bottom: 0,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Home",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Nato Sans"),
                     ),
                   ),
                 ),
-              ),
-              
-              Padding( // ACCOUNTS HEADING
-                padding: const EdgeInsets.only(
-                  left: 60,
-                  right: 0,
-                  top: 20,
-                  bottom: 0,
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Account",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
+
+                Padding(
+                  // ACCOUNTS HEADING
+                  padding: const EdgeInsets.only(
+                    left: 60,
+                    right: 0,
+                    top: 20,
+                    bottom: 0,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Account",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Nato Sans"),
                     ),
                   ),
                 ),
-              ),
-              
-              Row( // Accounts Row
-                children: [
-              
-                  //      ACCOUNT 1
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 30,
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-              
+
+                Row(
+                  // Accounts Row
+                  children: [
+                    //      ACCOUNT 1
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 30,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
                         child: IconButton(
-                          onPressed: (){}, 
+                          onPressed: () {},
                           //icon: Image.asset('assets/images/homeimage.jpg'),
                           icon: Icon(Icons.person),
                           selectedIcon: Icon(Icons.person),
                           style: IconButton.styleFrom(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
                           ),
-                          constraints: BoxConstraints.expand(width: 150, height: 150), //use with image icon
+                          constraints: BoxConstraints.expand(
+                              width: 150, height: 150), //use with image icon
                           hoverColor: const Color.fromARGB(255, 219, 219, 219),
                           padding: EdgeInsets.zero,
-                          iconSize: 125, //only works when you use code like icon: Icon(Icons.favorites) 
+                          iconSize:
+                              125, //only works when you use code like icon: Icon(Icons.favorites)
+                        ),
+                      ),
+                    ),
+
+                    //  BALANCE
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                      ),
+                      child: Container(
+                        width: 170,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1, color: Colors.black.withOpacity(0)),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: Colors.lightGreen.withOpacity(0.5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5,
+                            right: 0,
+                            top: 10,
+                            bottom: 10,
                           ),
-                      ),
-                  ),
-
-                  //  BALANCE
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                    ),
-                    child: Container(
-                      width: 170,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black.withOpacity(0)),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: Colors.lightGreen.withOpacity(0.5),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 5,
-                          right: 0,
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: Row(
-                          children: [
-                            Text("Balance: ",
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontWeight: FontWeight.bold,
-                            ),
-                            ),
-                            Text(appState.balance.toStringAsFixed(2), // Displays remaining to 2 decimal places
-                              style: TextStyle(
-                                height: -0.05, //get text in line with other text
-                                fontFamily: 'Open Sans',
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                          child: Row(
+                            children: [
+                              Text(
+                                "Balance: ",
+                                style: TextStyle(
+                                  fontFamily: 'Open Sans',
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                              Text(
+                                appState.balance.toStringAsFixed(
+                                    2), // Displays remaining to 2 decimal places
+                                style: TextStyle(
+                                  height:
+                                      -0.05, //get text in line with other text
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ), 
-              
 
-                  // //      ACCOUNT TWO FOR TESTING
-                  // Padding(
-                  //   padding: const EdgeInsets.only(
-                  //     left: 30,
-                  //     right: 0,
-                  //     top: 0,
-                  //     bottom: 0,
-                  //   ),
-                  //   child: Align(
-                  //     alignment: Alignment.centerLeft,
-              
-                  //       child: SizedBox.fromSize(
-                  //         size: Size(150, 150),
-                  //         child: ClipOval(
-                  //           child: Material(
-                  //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                  //             color: Colors.transparent,
-                  //             child: InkWell(
-                  //               splashColor: Colors.grey,
-                  //               onTap: (){},
-                  //               child: Column(
-                  //                 children: [
-                  //                   Icon(Icons.add_circle),
-                  //                   Text("You"),
-                  //                 ],
-                  //               )
-                  //             )
-                  //           )
-                  //         )
-                  //       )
-                  //     ),
-                  // )
-                ],
-              ),
-              //  TRANSACTIONS
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 60,
-                  right: 0,
-                  top: 20,
-                  bottom: 0,
+                    // //      ACCOUNT TWO FOR TESTING
+                    // Padding(
+                    //   padding: const EdgeInsets.only(
+                    //     left: 30,
+                    //     right: 0,
+                    //     top: 0,
+                    //     bottom: 0,
+                    //   ),
+                    //   child: Align(
+                    //     alignment: Alignment.centerLeft,
+
+                    //       child: SizedBox.fromSize(
+                    //         size: Size(150, 150),
+                    //         child: ClipOval(
+                    //           child: Material(
+                    //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    //             color: Colors.transparent,
+                    //             child: InkWell(
+                    //               splashColor: Colors.grey,
+                    //               onTap: (){},
+                    //               child: Column(
+                    //                 children: [
+                    //                   Icon(Icons.add_circle),
+                    //                   Text("You"),
+                    //                 ],
+                    //               )
+                    //             )
+                    //           )
+                    //         )
+                    //       )
+                    //     ),
+                    // )
+                  ],
                 ),
+                //  TRANSACTIONS
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 60,
+                    right: 0,
+                    top: 20,
+                    bottom: 0,
+                  ),
                   child: Column(
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text('Transactions',
+                        child: Text(
+                          'Transactions',
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontFamily: 'Nato Sans',
@@ -804,57 +840,73 @@ class _HomeMenuState extends State<HomeMenu> {
                       ),
 
                       //  IF TOTAL TRANSACTIONS IS GREATER THAN 5, RUN THIS COMMAND TO ONLY GET 5 LATEST
-                      if (appState.transactionList != [] && appState.transactionList.length >= 5) //Displays Transactions if list isn't emtpy
-                        for (var i=0; i<=4; i++) //Get the 5 latest Transactions
+                      if (appState.transactionList != [] &&
+                          appState.transactionList.length >=
+                              5) //Displays Transactions if list isn't emtpy
+                        for (var i = 0;
+                            i <= 4;
+                            i++) //Get the 5 latest Transactions
                           Align(
                             alignment: Alignment.centerLeft,
                             child: SizedBox(
-                              width: 250,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.attach_money_rounded,
-                                    size: 20,
-                                  ),
-                                  Text(appState.transactionList[i].toString(), //Shows each individual variable
-                                  //child: Text(appState.transactionList[count] as String //Shows each entry
-                                  style: TextStyle(
-                                    fontFamily: 'Open Sans',
-                                    fontSize: 15,
-                                    color: const Color.fromARGB(255, 253, 112, 69),
-                                    height: 1, //brings icon more in line with text
-                                  ),
-                                  ),
-                                ],
-                              )
-                              ),
+                                width: 250,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.attach_money_rounded,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      appState.transactionList[i]
+                                          .toString(), //Shows each individual variable
+                                      //child: Text(appState.transactionList[count] as String //Shows each entry
+                                      style: TextStyle(
+                                        fontFamily: 'Open Sans',
+                                        fontSize: 15,
+                                        color: const Color.fromARGB(
+                                            255, 253, 112, 69),
+                                        height:
+                                            1, //brings icon more in line with text
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           ),
                       // ELSE IF TOTAL TRANSACTIONS IS LESS THAN 5, RUN THIS COMMAND
-                      if (appState.transactionList != [] && appState.transactionList.length < 4) //Displays Transactions if list isn't emtpy
-                        for (var trans in appState.transactionList) //Get the 5 latest Transactions
+                      if (appState.transactionList != [] &&
+                          appState.transactionList.length <
+                              4) //Displays Transactions if list isn't emtpy
+                        for (var trans in appState
+                            .transactionList) //Get the 5 latest Transactions
                           Align(
                             alignment: Alignment.centerLeft,
                             child: SizedBox(
-                              width: 250,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.attach_money_rounded,
-                                    size: 20,
-                                  ),
-                                  Text(trans.toString(), //Shows each individual variable
-                                  //child: Text(appState.transactionList[count] as String //Shows each entry
-                                  style: TextStyle(
-                                    fontFamily: 'Open Sans',
-                                    fontSize: 15,
-                                    color: const Color.fromARGB(255, 253, 112, 69),
-                                    height: 1, //brings icon more in line with text
-                                  ),
-                                  ),
-                                ],
-                              )
-                              ),
+                                width: 250,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.attach_money_rounded,
+                                      size: 20,
+                                    ),
+                                    Text(
+                                      trans
+                                          .toString(), //Shows each individual variable
+                                      //child: Text(appState.transactionList[count] as String //Shows each entry
+                                      style: TextStyle(
+                                        fontFamily: 'Open Sans',
+                                        fontSize: 15,
+                                        color: const Color.fromARGB(
+                                            255, 253, 112, 69),
+                                        height:
+                                            1, //brings icon more in line with text
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           ),
 
-                      if (appState.transactionList.isEmpty) //Displays message if list IS empty
+                      if (appState.transactionList
+                          .isEmpty) //Displays message if list IS empty
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
@@ -864,22 +916,22 @@ class _HomeMenuState extends State<HomeMenu> {
                               top: 20,
                               bottom: 0,
                             ),
-                            child: Row( //Row with No Transactions Icon and Text
-                              children: [
-                                Icon(
-                                  //color: Colors.red,
-                                  Icons.error,
-                                ),
-                                Text(" There are no Transactions",
-                                  style: TextStyle(
-                                    //backgroundColor: Color.fromARGB(255, 214, 209, 209), 
-                                  ),
-                                ),
-                              ]
-                            ),
+                            child: Row(//Row with No Transactions Icon and Text
+                                children: [
+                              Icon(
+                                //color: Colors.red,
+                                Icons.error,
+                              ),
+                              Text(
+                                " There are no Transactions",
+                                style: TextStyle(
+                                    //backgroundColor: Color.fromARGB(255, 214, 209, 209),
+                                    ),
+                              ),
+                            ]),
                           ),
-                          ),  
-        
+                        ),
+
                       // EXCHANGE RATE TEXT
                       Padding(
                         padding: const EdgeInsets.only(
@@ -890,7 +942,8 @@ class _HomeMenuState extends State<HomeMenu> {
                         ),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text('Exchange Rate [JMD ⇆ USD]',
+                          child: Text(
+                            'Exchange Rate [JMD ⇆ USD]',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontFamily: 'Nato Sans',
@@ -900,25 +953,24 @@ class _HomeMenuState extends State<HomeMenu> {
                           ),
                         ),
                       ),
-        
+
                       //  EXCHANGE RATE IMAGE
                       Align(
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
-                          child: Image(
-                            image: AssetImage('assets/images/exchangeratesv2.png'),
-                            fit: BoxFit.fill
-                            )
-                          ),
+                            child: Image(
+                                image: AssetImage(
+                                    'assets/images/exchangeratesv2.png'),
+                                fit: BoxFit.fill)),
                       )
                     ],
                   ),
                 ),
-                Row( // EXCHANGE RATE INPUTS ROW
+                Row(
+                  // EXCHANGE RATE INPUTS ROW
                   children: [
-        
                     //  JMD INPUT TEXTFIELD
-                    Padding( 
+                    Padding(
                       padding: const EdgeInsets.only(
                         left: 250,
                         right: 0,
@@ -931,10 +983,11 @@ class _HomeMenuState extends State<HomeMenu> {
                           width: 100,
                           child: TextField(
                             controller: jmdController, // Get User Input
-                            onSubmitted: (value) { // If any text is entered
+                            onSubmitted: (value) {
+                              // If any text is entered
                               jmd = jmdController.text;
                               appState.jmd = double.parse(jmd);
-                              jmdToUSD = (appState.jmd/155.231).toString();
+                              jmdToUSD = (appState.jmd / 155.231).toString();
                               setState(() {
                                 appState.jmdToUSD = double.parse(jmdToUSD);
                                 //print((appState.jmd/155.231).toString());
@@ -945,18 +998,18 @@ class _HomeMenuState extends State<HomeMenu> {
                             decoration: InputDecoration(
                               alignLabelWithHint: true,
                               //border: OutlineInputBorder(), //just to help see the parameters
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                              floatingLabelBehavior: FloatingLabelBehavior
+                                  .never, //Removes annoying floating label text on click
                               hintText: 'JMD',
-                              hintStyle: TextStyle( //Changes hint Text Font
-                                fontFamily: 'Open Sans'
-                              ),
+                              hintStyle: TextStyle(
+                                  //Changes hint Text Font
+                                  fontFamily: 'Open Sans'),
                             ),
                           ),
                         ),
                       ),
                     ),
-        
-                    
+
                     Padding(
                       padding: const EdgeInsets.only(
                         left: 20,
@@ -965,18 +1018,16 @@ class _HomeMenuState extends State<HomeMenu> {
                         bottom: 20,
                       ),
                       child: TextButton(
-                        onPressed: (){}, 
-                          child: SizedBox(
+                        onPressed: () {},
+                        child: SizedBox(
                             width: 50,
                             //height: 50,
                             child: Image(
-                              image: AssetImage('assets/images/exchange.png'),
-                              fit: BoxFit.fill
-                              )
-                            ),
-                        ),
+                                image: AssetImage('assets/images/exchange.png'),
+                                fit: BoxFit.fill)),
+                      ),
                     ),
-        
+
                     //  USD INPUT/OUTPUT TEXTFIELD
                     Expanded(
                       child: Padding(
@@ -991,23 +1042,24 @@ class _HomeMenuState extends State<HomeMenu> {
                           child: SizedBox(
                             width: 100,
                             //height: 50,
-                            child: TextField(            
+                            child: TextField(
                               readOnly: true,
                               // onChanged: (value) {
                               //   jmdToUSD = (appState.jmd/155.231);
-                              // }, 
+                              // },
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
-                                alignLabelWithHint: true,
-                                //border: OutlineInputBorder(), //just to help see the parameters
-                                floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                                //labelText: appState.jmdToUSD.toStringAsFixed(3),
-                                hintText: appState.jmdToUSD.toStringAsFixed(3),
-                                hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black.withOpacity(0.7),
-                                )
-                              ),
+                                  alignLabelWithHint: true,
+                                  //border: OutlineInputBorder(), //just to help see the parameters
+                                  floatingLabelBehavior: FloatingLabelBehavior
+                                      .never, //Removes annoying floating label text on click
+                                  //labelText: appState.jmdToUSD.toStringAsFixed(3),
+                                  hintText:
+                                      appState.jmdToUSD.toStringAsFixed(3),
+                                  hintStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black.withOpacity(0.7),
+                                  )),
                             ),
                           ),
                         ),
@@ -1015,17 +1067,14 @@ class _HomeMenuState extends State<HomeMenu> {
                     ),
                   ],
                 ),
-            ],
+              ],
+            ),
           ),
-        ),
-      )
-    );
-
+        ));
   }
 }
 
-class DashboardPage extends StatefulWidget{
-
+class DashboardPage extends StatefulWidget {
   @override
   State<DashboardPage> createState() => _DashboardPageState();
 }
@@ -1033,7 +1082,6 @@ class DashboardPage extends StatefulWidget{
 class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
-    
     var theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
     final addExpenseNameController = TextEditingController();
@@ -1049,186 +1097,197 @@ class _DashboardPageState extends State<DashboardPage> {
     //appState.expenseList.add("1000.00");
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 241, 238, 238),
-      body: SingleChildScrollView(
-        child: Container(
-
-          //  DASHBOARD PAGE IMAGE
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            image: DecorationImage(
-              image: AssetImage('assets/images/home_background6.jpg'),
-              opacity: 0.9,
-              fit: BoxFit.cover,
+        backgroundColor: Color.fromARGB(255, 241, 238, 238),
+        body: SingleChildScrollView(
+          child: Container(
+            //  DASHBOARD PAGE IMAGE
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              image: DecorationImage(
+                image: AssetImage('assets/images/home_background6.jpg'),
+                opacity: 0.9,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
 
-          child: Column(
-            children: [
-              Padding( // DASHBOARD HEADING
-                padding: const EdgeInsets.only(
-                  left: 50,
-                  right: 0,
-                  top: 10,
-                  bottom: 0,
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Dashboard",
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
+            child: Column(
+              children: [
+                Padding(
+                  // DASHBOARD HEADING
+                  padding: const EdgeInsets.only(
+                    left: 50,
+                    right: 0,
+                    top: 10,
+                    bottom: 0,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Dashboard",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Nato Sans"),
                     ),
                   ),
                 ),
-              ),
-              
-              Padding( // INFORMATION HEADING
-                padding: const EdgeInsets.only(
-                  left: 60,
-                  right: 0,
-                  top: 20,
-                  bottom: 10,
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Information",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
+
+                Padding(
+                  // INFORMATION HEADING
+                  padding: const EdgeInsets.only(
+                    left: 60,
+                    right: 0,
+                    top: 20,
+                    bottom: 10,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Information",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Nato Sans"),
                     ),
                   ),
                 ),
-              ),
-              
-              Row( // INFORMATION ROW
-                children: [
-              
-                  //  GOAL
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 60,
-                    ),
-                    child: Container(
-                      width: 250,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black.withOpacity(0)),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        //color: Colors.grey.withOpacity(0.5),
-                        color: Colors.yellow.withOpacity(0.5),
+
+                Row(
+                  // INFORMATION ROW
+                  children: [
+                    //  GOAL
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 60,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 5,
-                          right: 0,
-                          top: 10,
-                          bottom: 10,
+                      child: Container(
+                        width: 250,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1, color: Colors.black.withOpacity(0)),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          //color: Colors.grey.withOpacity(0.5),
+                          color: Colors.yellow.withOpacity(0.5),
                         ),
-                        child: Row(
-                          children: [
-                            Text("Goal: "),
-                            Text(appState.savingsgoal.toStringAsFixed(2), // Displays goal to 2 decimal places,
-                              style: TextStyle(
-                                height: -0.05, //get text in line with other text
-                                fontFamily: 'Open Sans',
-                                fontSize: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5,
+                            right: 0,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Row(
+                            children: [
+                              Text("Goal: "),
+                              Text(
+                                appState.savingsgoal.toStringAsFixed(
+                                    2), // Displays goal to 2 decimal places,
+                                style: TextStyle(
+                                  height:
+                                      -0.05, //get text in line with other text
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 15,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  //  REMAINING
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                    ),
-                    child: Container(
-                      width: 250,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black.withOpacity(0)),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: Colors.lightGreen.withOpacity(0.5),
+                    //  REMAINING
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 5,
-                          right: 0,
-                          top: 10,
-                          bottom: 10,
+                      child: Container(
+                        width: 250,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1, color: Colors.black.withOpacity(0)),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: Colors.lightGreen.withOpacity(0.5),
                         ),
-                        child: Row(
-                          children: [
-                            Text("Remaining: "),
-                            Text(appState.balance.toStringAsFixed(2), // Displays remaining to 2 decimal places
-                              style: TextStyle(
-                                height: -0.05, //get text in line with other text
-                                fontFamily: 'Open Sans',
-                                fontSize: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5,
+                            right: 0,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Row(
+                            children: [
+                              Text("Remaining: "),
+                              Text(
+                                appState.balance.toStringAsFixed(
+                                    2), // Displays remaining to 2 decimal places
+                                style: TextStyle(
+                                  height:
+                                      -0.05, //get text in line with other text
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 15,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ), 
 
-                  //  SPENT
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                    ),
-                    child: Container(
-                      width: 250,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black.withOpacity(0)),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: Colors.redAccent.withOpacity(0.5),
+                    //  SPENT
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 5,
-                          right: 0,
-                          top: 10,
-                          bottom: 10,
+                      child: Container(
+                        width: 250,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1, color: Colors.black.withOpacity(0)),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: Colors.redAccent.withOpacity(0.5),
                         ),
-                        child: Row(
-                          children: [
-                            Text("Spent: "),
-                            Text(appState.spent.toStringAsFixed(2), // Displays spent to 2 decimal places
-                              style: TextStyle(
-                                height: -0.05, //get text in line with other text
-                                fontFamily: 'Open Sans',
-                                fontSize: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5,
+                            right: 0,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Row(
+                            children: [
+                              Text("Spent: "),
+                              Text(
+                                appState.spent.toStringAsFixed(
+                                    2), // Displays spent to 2 decimal places
+                                style: TextStyle(
+                                  height:
+                                      -0.05, //get text in line with other text
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 15,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ), 
-
-                ],
-              ),
-
-              //  EXPENSES
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 60,
-                  right: 0,
-                  top: 20,
-                  bottom: 0,
+                  ],
                 ),
+
+                //  EXPENSES
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 60,
+                    right: 0,
+                    top: 20,
+                    bottom: 0,
+                  ),
                   child: Column(
                     children: [
-        
                       // EXPENSES TEXT
                       Padding(
                         padding: const EdgeInsets.only(
@@ -1239,7 +1298,8 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text('Expenses',
+                          child: Text(
+                            'Expenses',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontFamily: 'Nato Sans',
@@ -1249,110 +1309,125 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ),
                       ),
-        
+
                       //  EXPENSES SEARCH FIELD
                       Align(
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
-                          width: 790,
-                          height: 45,
-                          child: TextField(
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontSize: 15,
-                            ),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Search...',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
+                            width: 790,
+                            height: 45,
+                            child: TextField(
+                              style: TextStyle(
+                                fontFamily: 'Open Sans',
+                                fontSize: 15,
                               ),
-                            ),
-                          )
-                          ),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                floatingLabelBehavior: FloatingLabelBehavior
+                                    .never, //Removes annoying floating label text on click
+                                labelText: 'Search...',
+                                labelStyle: TextStyle(
+                                    //Changes Font
+                                    fontFamily: 'Nato Sans'),
+                              ),
+                            )),
                       ),
 
                       //          EXPENSES LIST
 
                       Padding(
                         padding: const EdgeInsets.only(
-                        top: 10,
+                          top: 10,
                         ),
-                        child: Align( //align container
+                        child: Align(
+                          //align container
                           alignment: Alignment.centerLeft,
                           child: Container(
                             width: 790,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                              borderRadius: BorderRadius.all(Radius.circular(5))
-                            ),
-                            child: Align( //align everything inside box
+                                border: Border.all(
+                                    width: 1,
+                                    color: Colors.black.withOpacity(0.5)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: Align(
+                              //align everything inside box
                               alignment: Alignment.centerLeft,
                               child: SizedBox(
-                                width: 780,
-                                child: Column(
-                                  children: [
-                                    if (appState.expenseList != []) //Displays Expenses if list isn't emtpy
-                                      for (var expense in appState.expenseList) //Get all expenses
-                                        Row(
-                                          children: [
-                                            //  Money Icon and Expense Text Part
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 5,
+                                  width: 780,
+                                  child: Column(
+                                    children: [
+                                      if (appState.expenseList !=
+                                          []) //Displays Expenses if list isn't emtpy
+                                        for (var expense in appState
+                                            .expenseList) //Get all expenses
+                                          Row(
+                                            children: [
+                                              //  Money Icon and Expense Text Part
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 5,
+                                                ),
+                                                child: Icon(
+                                                  Icons.attach_money_rounded,
+                                                  color:
+                                                      Colors.deepOrangeAccent,
+                                                ),
                                               ),
-                                              child: Icon(Icons.attach_money_rounded, 
-                                              color: Colors.deepOrangeAccent,
+                                              Text(
+                                                expense,
+                                                style: TextStyle(
+                                                  color:
+                                                      Colors.deepOrangeAccent,
+                                                ),
                                               ),
-                                            ),
-                                            Text(expense,
-                                              style: TextStyle(
-                                                color: Colors.deepOrangeAccent,
-                                              ),
-                                            ),
 
-                                            //  Remove Button
-                                            Expanded( // Aligns it nicely to the right
-                                              child: Align(
-                                                alignment: Alignment.centerRight,
-                                                child: TextButton( // Expense Button To Delete
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      appState.removeExpense(expense);
-                                                      //print(appState.expenseList);
-                                                    });
-                                                  },
-                                              
-                                                  child: Icon(Icons.delete,
-                                                    size: 20,
-                                                    color: Colors.red,
-                                                  ),
-                                                  ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                              //  Remove Button
+                                              Expanded(
+                                                // Aligns it nicely to the right
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: TextButton(
+                                                    // Expense Button To Delete
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        appState.removeExpense(
+                                                            expense);
+                                                        //print(appState.expenseList);
+                                                      });
+                                                    },
 
-                                    // Text(expense.toString(), //Shows each individual variable
-                                    // //child: Text(appState.transactionList[count] as String //Shows each entry
-                                    // style: TextStyle(
-                                    //   fontFamily: 'Open Sans',
-                                    //   fontSize: 15,
-                                    //   color: const Color.fromARGB(255, 253, 112, 69),
-                                    //   height: 1, //brings icon more in line with text
-                                    // ),
-                                    // ),
-                                  ],
-                                )
-                                ),
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      size: 20,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                      // Text(expense.toString(), //Shows each individual variable
+                                      // //child: Text(appState.transactionList[count] as String //Shows each entry
+                                      // style: TextStyle(
+                                      //   fontFamily: 'Open Sans',
+                                      //   fontSize: 15,
+                                      //   color: const Color.fromARGB(255, 253, 112, 69),
+                                      //   height: 1, //brings icon more in line with text
+                                      // ),
+                                      // ),
+                                    ],
+                                  )),
                             ),
                           ),
                         ),
                       ),
 
                       //  EXPENSES BOX IF EMPTY
-                      if (appState.expenseList.isEmpty) //Displays message if list IS empty
+                      if (appState.expenseList
+                          .isEmpty) //Displays message if list IS empty
                         Padding(
                           padding: const EdgeInsets.only(
                             top: 10,
@@ -1362,10 +1437,13 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: Container(
                               width: 790,
                               decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                                borderRadius: BorderRadius.all(Radius.circular(5))
-                              ),
-                              child: Align( //aligns everything inside box
+                                  border: Border.all(
+                                      width: 1,
+                                      color: Colors.black.withOpacity(0.5)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: Align(
+                                //aligns everything inside box
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -1374,217 +1452,245 @@ class _DashboardPageState extends State<DashboardPage> {
                                     top: 5,
                                     bottom: 5,
                                   ),
-                                  child: Row( //Row with No Expenses Icon and Text
-                                    children: [
-                                      Icon(
-                                        //color: Colors.red,
-                                        Icons.error,
-                                      ),
-                                      Text(" There are no Expenses",
-                                        style: TextStyle(
-                                          //backgroundColor: Color.fromARGB(255, 214, 209, 209), 
-                                        ),
-                                      ),
-                                    ]
+                                  child:
+                                      Row(//Row with No Expenses Icon and Text
+                                          children: [
+                                    Icon(
+                                      //color: Colors.red,
+                                      Icons.error,
+                                    ),
+                                    Text(
+                                      " There are no Expenses",
+                                      style: TextStyle(
+                                          //backgroundColor: Color.fromARGB(255, 214, 209, 209),
+                                          ),
+                                    ),
+                                  ]),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      Padding(
+                        // ADD EXPENSE HEADING
+                        padding: const EdgeInsets.only(
+                          left: 0,
+                          right: 0,
+                          top: 20,
+                          bottom: 10,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Add Expense",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Nato Sans"),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        // NAME & COST HEADING
+                        padding: const EdgeInsets.only(
+                          left: 0,
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 0,
+                                right: 60,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Name",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Open Sans"),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 166,
+                                right: 0,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Cost",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Open Sans"),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Row(
+                        // NAME & COST INPUTS ROW
+                        children: [
+                          //  NAME TEXTFIELD
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 0,
+                              right: 0,
+                              top: 0,
+                              bottom: 20,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                width: 250,
+                                height: 40,
+                                child: TextField(
+                                  controller:
+                                      addExpenseNameController, // Get User Input
+                                  onSubmitted: (value) {
+                                    // If Enter is pushed
+                                    addExpenseName =
+                                        addExpenseNameController.text;
+                                    //print(addExpenseName);
+                                    appState.expenseName = addExpenseName;
+                                  },
+                                  onChanged: (value) {
+                                    // If any text is entered at all
+                                    addExpenseName =
+                                        addExpenseNameController.text;
+                                    appState.expenseName = addExpenseName;
+                                  },
+
+                                  style: TextStyle(
+                                      fontSize: 14, fontFamily: 'Open Sans'),
+                                  //textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                    alignLabelWithHint: true,
+                                    border:
+                                        OutlineInputBorder(), //just to help see the parameters
+                                    floatingLabelBehavior: FloatingLabelBehavior
+                                        .never, //Removes annoying floating label text on click
+                                    //hintText: 'Name',
+                                    hintStyle: TextStyle(
+                                        //Changes hint Text Font
+                                        fontFamily: 'Open Sans'),
                                   ),
                                 ),
+                              ),
+                            ),
+                          ),
+
+                          //  COST TEXT FIELD
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 0,
+                              top: 0,
+                              bottom: 20,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                width: 250,
+                                height: 40,
+                                child: TextField(
+                                  controller:
+                                      addExpenseCostController, // Get User Input
+                                  onSubmitted: (value) {
+                                    // If Enter is pushed
+                                    addExpenseCost =
+                                        addExpenseCostController.text;
+                                    appState.expenseCost =
+                                        double.parse(addExpenseCost);
+                                    //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can
+                                    //print((appState.expenseName.toString(), appState.expenseCost.toString()));
+                                  },
+                                  onChanged: (value) {
+                                    // If any text is entered at all
+                                    addExpenseCost =
+                                        addExpenseCostController.text;
+                                    if (addExpenseCost != "") {
+                                      appState.expenseCost =
+                                          double.parse(addExpenseCost);
+                                    }
+                                    //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can
+                                    //print((appState.expenseName.toString(), appState.expenseCost.toString()));
+                                  },
+
+                                  style: TextStyle(
+                                      fontSize: 14, fontFamily: 'Open Sans'),
+                                  //textAlign: TextAlign.center,
+                                  decoration: InputDecoration(
+                                    alignLabelWithHint: true,
+                                    border:
+                                        OutlineInputBorder(), //just to help see the parameters
+                                    floatingLabelBehavior: FloatingLabelBehavior
+                                        .never, //Removes annoying floating label text on click
+                                    //hintText: 'Cost',
+                                    hintStyle: TextStyle(
+                                        //Changes hint Text Font
+                                        fontFamily: 'Open Sans'),
+                                  ),
                                 ),
-                            ),
-                          ),
-                        ),  
-
-              Padding( // ADD EXPENSE HEADING
-                padding: const EdgeInsets.only(
-                  left: 0,
-                  right: 0,
-                  top: 20,
-                  bottom: 10,
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Add Expense",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
-                    ),
-                  ),
-                ),
-              ),
-
-              Padding( // NAME & COST HEADING
-                padding: const EdgeInsets.only(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 0,
-                        right: 60,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Name",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Open Sans"
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 166,
-                        right: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Cost",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Open Sans"
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-              ),
-
-                Row( // NAME & COST INPUTS ROW
-                  children: [
-        
-                    //  NAME TEXTFIELD
-                    Padding( 
-                      padding: const EdgeInsets.only(
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 20,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 250,
-                          height: 40,
-                          child: TextField(
-                              controller: addExpenseNameController, // Get User Input
-                              onSubmitted: (value) { // If Enter is pushed
-                                addExpenseName = addExpenseNameController.text;
-                                appState.expenseName = addExpenseName;
-                              },
-                              onChanged: (value) { // If any text is entered at all
-                                addExpenseName = addExpenseNameController.text;
-                                appState.expenseName = addExpenseName;
-                              },
-
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Open Sans'
-                            ),
-                            //textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              alignLabelWithHint: true,
-                              border: OutlineInputBorder(), //just to help see the parameters
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              //hintText: 'Name',
-                              hintStyle: TextStyle( //Changes hint Text Font
-                                fontFamily: 'Open Sans'
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-        
-                    //  COST TEXT FIELD
-                    Padding( 
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        right: 0,
-                        top: 0,
-                        bottom: 20,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 250,
-                          height: 40,
-                          child: TextField(
-                            controller: addExpenseCostController, // Get User Input
-                            onSubmitted: (value) { // If Enter is pushed
-                              addExpenseCost = addExpenseCostController.text;
-                              appState.expenseCost = double.parse(addExpenseCost);
-                              //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can 
-                              //print((appState.expenseName.toString(), appState.expenseCost.toString()));
-                            },
-                            onChanged: (value) { // If any text is entered at all
-                              addExpenseCost = addExpenseCostController.text;
-                              if (addExpenseCost != ""){
-                                appState.expenseCost = double.parse(addExpenseCost);
-                              }
-                              //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can 
-                              //print((appState.expenseName.toString(), appState.expenseCost.toString()));
-                            },
 
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Open Sans'
+                          //  ADD EXPENSE BUTTON
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 0,
+                              top: 0,
+                              bottom: 20,
                             ),
-                            //textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              alignLabelWithHint: true,
-                              border: OutlineInputBorder(), //just to help see the parameters
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              //hintText: 'Cost',
-                              hintStyle: TextStyle( //Changes hint Text Font
-                                fontFamily: 'Open Sans'
-                              ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                  width: 50,
+                                  height: 40,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        //  ADD EXPENSE TO EXPENSE LIST
+                                        appState.expenseList.add(
+                                            ("${appState.expenseName} ${appState.expenseCost.toStringAsFixed(2)}")); //Interpolation
+                                        appState.expenseCostList.add((
+                                          appState.expenseName,
+                                          appState.expenseCost
+                                        )); // Separate list for calcualtions
+                                        appState.balance -= appState
+                                            .expenseCost; // subtract expense from balance
+                                        appState.spent += appState
+                                            .expenseCost; // add expense cost to spent
+                                      });
+
+                                      var url="http://127.0.0.1:5000/api?name=${appState.expenseName}&cost=${appState.expenseCost}";
+                                      print(appState.expenseName);
+                                      print(appState.expenseCost);
+
+                                     var data= await GetData(url);
+                                     Map<String, dynamic> user = jsonDecode(data.body.toString());
+                                      print(url);
+                                      print(data);
+                                      print(user);
+                                    },
+                                    icon: Icon(Icons.add),
+                                  )),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ),     
-
-                    //  ADD EXPENSE BUTTON
-                    Padding( 
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        right: 0,
-                        top: 0,
-                        bottom: 20,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 50,
-                          height: 40,
-                          child: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                //  ADD EXPENSE TO EXPENSE LIST
-                                appState.expenseList.add(("${appState.expenseName} ${appState.expenseCost.toStringAsFixed(2)}")); //Interpolation
-                                appState.expenseCostList.add((appState.expenseName, appState.expenseCost)); // Separate list for calcualtions
-                                appState.balance -= appState.expenseCost; // subtract expense from balance
-                                appState.spent += appState.expenseCost; // add expense cost to spent
-                              });
-                            }, 
-                            icon: Icon(Icons.add),
-                            )
-                        ),
-                      ),
-                    ),   
-
-                  ],
-                ),
 
                       // INCOME TEXT
                       Padding(
@@ -1596,7 +1702,8 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text('Income Channels',
+                          child: Text(
+                            'Income Channels',
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontFamily: 'Nato Sans',
@@ -1606,101 +1713,115 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ),
                       ),
-        
+
                       //  INCOME SEARCH FIELD
                       Align(
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
-                          width: 790,
-                          height: 45,
-                          child: TextField(
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontSize: 15,
-                            ),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Search...',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
+                            width: 790,
+                            height: 45,
+                            child: TextField(
+                              style: TextStyle(
+                                fontFamily: 'Open Sans',
+                                fontSize: 15,
                               ),
-                            ),
-                          )
-                          ),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                floatingLabelBehavior: FloatingLabelBehavior
+                                    .never, //Removes annoying floating label text on click
+                                labelText: 'Search...',
+                                labelStyle: TextStyle(
+                                    //Changes Font
+                                    fontFamily: 'Nato Sans'),
+                              ),
+                            )),
                       ),
 
                       //          INCOME LIST
 
                       Padding(
                         padding: const EdgeInsets.only(
-                        top: 10,
+                          top: 10,
                         ),
-                        child: Align( //align container
+                        child: Align(
+                          //align container
                           alignment: Alignment.centerLeft,
                           child: Container(
                             width: 790,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                              borderRadius: BorderRadius.all(Radius.circular(5))
-                            ),
-                            child: Align( //align everything inside box
+                                border: Border.all(
+                                    width: 1,
+                                    color: Colors.black.withOpacity(0.5)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            child: Align(
+                              //align everything inside box
                               alignment: Alignment.centerLeft,
                               child: SizedBox(
-                                width: 780,
-                                child: Column(
-                                  children: [
-                                    if (appState.incomeList != []) //Displays Income channels if list isn't emtpy
-                                      for (var income in appState.incomeList) //Get all income channels
-                                        Row(
-                                          children: [
-                                            //  Money Icon and Income Text Part
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 5,
+                                  width: 780,
+                                  child: Column(
+                                    children: [
+                                      if (appState.incomeList !=
+                                          []) //Displays Income channels if list isn't emtpy
+                                        for (var income in appState
+                                            .incomeList) //Get all income channels
+                                          Row(
+                                            children: [
+                                              //  Money Icon and Income Text Part
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 5,
+                                                ),
+                                                child: Icon(
+                                                  Icons.attach_money_rounded,
+                                                  color:
+                                                      Colors.deepPurpleAccent,
+                                                ),
                                               ),
-                                              child: Icon(Icons.attach_money_rounded, 
-                                              color: Colors.deepPurpleAccent,
+                                              Text(
+                                                income,
+                                                style: TextStyle(
+                                                  color:
+                                                      Colors.deepPurpleAccent,
+                                                ),
                                               ),
-                                            ),
-                                            Text(income,
-                                              style: TextStyle(
-                                                color: Colors.deepPurpleAccent,
-                                              ),
-                                            ),
 
-                                            //  Remove Button
-                                            Expanded( // Aligns it nicely to the right
-                                              child: Align(
-                                                alignment: Alignment.centerRight,
-                                                child: TextButton( // Income Button To Delete
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      appState.removeIncome(income);
-                                                      //print(appState.expenseList);
-                                                    });
-                                                  },
-                                              
-                                                  child: Icon(Icons.delete,
-                                                    size: 20,
-                                                    color: Colors.red,
-                                                  ),
-                                                  ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                              //  Remove Button
+                                              Expanded(
+                                                // Aligns it nicely to the right
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: TextButton(
+                                                    // Income Button To Delete
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        appState.removeIncome(
+                                                            income);
+                                                        //print(appState.expenseList);
+                                                      });
+                                                    },
 
-                                  ],
-                                )
-                                ),
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      size: 20,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    ],
+                                  )),
                             ),
                           ),
                         ),
                       ),
 
                       //  INCOME BOX IF EMPTY
-                      if (appState.incomeList.isEmpty) //Displays message if list IS empty
+                      if (appState.incomeList
+                          .isEmpty) //Displays message if list IS empty
                         Padding(
                           padding: const EdgeInsets.only(
                             top: 10,
@@ -1710,10 +1831,13 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: Container(
                               width: 790,
                               decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                                borderRadius: BorderRadius.all(Radius.circular(5))
-                              ),
-                              child: Align( //aligns everything inside box
+                                  border: Border.all(
+                                      width: 1,
+                                      color: Colors.black.withOpacity(0.5)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              child: Align(
+                                //aligns everything inside box
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -1722,99 +1846,98 @@ class _DashboardPageState extends State<DashboardPage> {
                                     top: 5,
                                     bottom: 5,
                                   ),
-                                  child: Row( //Row with No Income Icon and Text
-                                    children: [
-                                      Icon(
-                                        //color: Colors.red,
-                                        Icons.error,
-                                      ),
-                                      Text(" There are no Income Channels",
-                                        style: TextStyle(
-                                          //backgroundColor: Color.fromARGB(255, 214, 209, 209), 
-                                        ),
-                                      ),
-                                    ]
-                                  ),
+                                  child: Row(//Row with No Income Icon and Text
+                                      children: [
+                                    Icon(
+                                      //color: Colors.red,
+                                      Icons.error,
+                                    ),
+                                    Text(
+                                      " There are no Income Channels",
+                                      style: TextStyle(
+                                          //backgroundColor: Color.fromARGB(255, 214, 209, 209),
+                                          ),
+                                    ),
+                                  ]),
                                 ),
-                                ),
+                              ),
                             ),
                           ),
-                        ),  
+                        ),
 
-              Padding( // ADD INCOME HEADING
-                padding: const EdgeInsets.only(
-                  left: 0,
-                  right: 0,
-                  top: 20,
-                  bottom: 10,
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text("Add Income Channel",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
-                    ),
-                  ),
-                ),
-              ),
-
-              Padding( // NAME & EARNINGS HEADING
-                padding: const EdgeInsets.only(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 0,
-                        right: 60,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Name",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Open Sans"
+                      Padding(
+                        // ADD INCOME HEADING
+                        padding: const EdgeInsets.only(
+                          left: 0,
+                          right: 0,
+                          top: 20,
+                          bottom: 10,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Add Income Channel",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Nato Sans"),
                           ),
                         ),
                       ),
-                    ),
 
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 166,
-                        right: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Monthly Earnings",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Open Sans"
-                          ),
+                      Padding(
+                        // NAME & EARNINGS HEADING
+                        padding: const EdgeInsets.only(
+                          left: 0,
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 0,
+                                right: 60,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Name",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Open Sans"),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 166,
+                                right: 0,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Monthly Earnings",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Open Sans"),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-
-                  ],
-                ),
-              ),
-
                     ],
                   ),
                 ),
-                Row( // NAME & EARNINGS INPUTS ROW
+                Row(
+                  // NAME & EARNINGS INPUTS ROW
                   children: [
-        
                     //  NAME TEXTFIELD
-                    Padding( 
+                    Padding(
                       padding: const EdgeInsets.only(
                         left: 60,
                         right: 0,
@@ -1827,37 +1950,40 @@ class _DashboardPageState extends State<DashboardPage> {
                           width: 250,
                           height: 40,
                           child: TextField(
-                              controller: addIncomeNameController, // Get User Input
-                              onSubmitted: (value) { // If Enter is pushed
-                                addIncomeName = addIncomeNameController.text;
-                                appState.incomeName = addIncomeName;
-                              },
-                              onChanged: (value) { // If any text is entered at all
-                                addIncomeName = addIncomeNameController.text;
-                                appState.incomeName = addIncomeName;
-                              },
+                            controller:
+                                addIncomeNameController, // Get User Input
+                            onSubmitted: (value) {
+                              // If Enter is pushed
+                              addIncomeName = addIncomeNameController.text;
+                              appState.incomeName = addIncomeName;
+                            },
+                            onChanged: (value) {
+                              // If any text is entered at all
+                              addIncomeName = addIncomeNameController.text;
+                              appState.incomeName = addIncomeName;
+                            },
 
                             style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Open Sans'
-                            ),
+                                fontSize: 14, fontFamily: 'Open Sans'),
                             //textAlign: TextAlign.center,
                             decoration: InputDecoration(
                               alignLabelWithHint: true,
-                              border: OutlineInputBorder(), //just to help see the parameters
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                              border:
+                                  OutlineInputBorder(), //just to help see the parameters
+                              floatingLabelBehavior: FloatingLabelBehavior
+                                  .never, //Removes annoying floating label text on click
                               //hintText: 'Name',
-                              hintStyle: TextStyle( //Changes hint Text Font
-                                fontFamily: 'Open Sans'
-                              ),
+                              hintStyle: TextStyle(
+                                  //Changes hint Text Font
+                                  fontFamily: 'Open Sans'),
                             ),
                           ),
                         ),
                       ),
                     ),
-        
+
                     //  EARNINGS TEXT FIELD
-                    Padding( 
+                    Padding(
                       padding: const EdgeInsets.only(
                         left: 20,
                         right: 0,
@@ -1870,43 +1996,48 @@ class _DashboardPageState extends State<DashboardPage> {
                           width: 250,
                           height: 40,
                           child: TextField(
-                            controller: addIncomeValueController, // Get User Input
-                            onSubmitted: (value) { // If Enter is pushed
+                            controller:
+                                addIncomeValueController, // Get User Input
+                            onSubmitted: (value) {
+                              // If Enter is pushed
                               addIncomeValue = addIncomeValueController.text;
-                              appState.incomeValue = double.parse(addIncomeValue);
-                              //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can 
+                              appState.incomeValue =
+                                  double.parse(addIncomeValue);
+                              //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can
                               //print((appState.expenseName.toString(), appState.expenseCost.toString()));
                             },
-                            onChanged: (value) { // If any text is entered at all
+                            onChanged: (value) {
+                              // If any text is entered at all
                               addIncomeValue = addIncomeValueController.text;
-                              if (addIncomeValue != ""){
-                                appState.incomeValue = double.parse(addIncomeValue);
+                              if (addIncomeValue != "") {
+                                appState.incomeValue =
+                                    double.parse(addIncomeValue);
                               }
-                              //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can 
+                              //appState.expenseCostList.add(double.parse(addExpenseCost)); //add the expense to the expense cost list so i can
                               //print((appState.expenseName.toString(), appState.expenseCost.toString()));
                             },
 
                             style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Open Sans'
-                            ),
+                                fontSize: 14, fontFamily: 'Open Sans'),
                             //textAlign: TextAlign.center,
                             decoration: InputDecoration(
                               alignLabelWithHint: true,
-                              border: OutlineInputBorder(), //just to help see the parameters
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                              border:
+                                  OutlineInputBorder(), //just to help see the parameters
+                              floatingLabelBehavior: FloatingLabelBehavior
+                                  .never, //Removes annoying floating label text on click
                               //hintText: 'Cost',
-                              hintStyle: TextStyle( //Changes hint Text Font
-                                fontFamily: 'Open Sans'
-                              ),
+                              hintStyle: TextStyle(
+                                  //Changes hint Text Font
+                                  fontFamily: 'Open Sans'),
                             ),
                           ),
                         ),
                       ),
-                    ),     
+                    ),
 
                     //  ADD INCOME BUTTON
-                    Padding( 
+                    Padding(
                       padding: const EdgeInsets.only(
                         left: 20,
                         right: 0,
@@ -1916,50 +2047,55 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
-                          width: 50,
-                          height: 40,
-                          child: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                //  ADD INCOME TO INCOME LIST
-                                appState.incomeList.add(("${appState.incomeName} ${appState.incomeValue.toStringAsFixed(2)}")); //Interpolation
-                                appState.incomeValueList.add((appState.incomeName, appState.incomeValue)); // Separate list for calcualtions
-                                appState.balance += appState.incomeValue; // adds income to remaining balance
-                                appState.income += appState.incomeValue; // add income value to income
-                              });
-                            }, 
-                            icon: Icon(Icons.add),
-                            )
-                        ),
+                            width: 50,
+                            height: 40,
+                            child: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  //  ADD INCOME TO INCOME LIST
+                                  appState.incomeList.add(
+                                      ("${appState.incomeName} ${appState.incomeValue.toStringAsFixed(2)}")); //Interpolation
+                                  appState.incomeValueList.add((
+                                    appState.incomeName,
+                                    appState.incomeValue
+                                  )); // Separate list for calcualtions
+                                  appState.balance += appState
+                                      .incomeValue; // adds income to remaining balance
+                                  appState.income += appState
+                                      .incomeValue; // add income value to income
+                                });
+                              },
+                              icon: Icon(Icons.add),
+                            )),
                       ),
-                    ),   
-
+                    ),
                   ],
                 ),
                 SizedBox(
                   height: 210,
                 )
-            ],
+              ],
+            ),
           ),
-        ),
-      )
-    );
-
+        ));
   }
 }
 
-class SignUpPage extends StatefulWidget{
-
+class SignUpPage extends StatefulWidget {
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final addEmailController = TextEditingController();
+  final addPasswordController = TextEditingController();
+  var email ="";
+  var password="";
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     Widget page;
-
 
     return Scaffold(
       body: Container(
@@ -1973,11 +2109,15 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         child: Column(
           children: [
-            SizedBox(height: 10,), //Adds a bit of space between top bar to image
+            SizedBox(
+              height: 10,
+            ), //Adds a bit of space between top bar to image
             Container(
-              padding: EdgeInsets.all(30), //Dictates size of image container i.e. image size basically
+              padding: EdgeInsets.all(
+                  30), //Dictates size of image container i.e. image size basically
               width: 80,
-              decoration: BoxDecoration( //Adds logo image to container
+              decoration: BoxDecoration(
+                //Adds logo image to container
                 image: DecorationImage(
                   alignment: Alignment.topCenter,
                   fit: BoxFit.fill,
@@ -1985,9 +2125,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
             ),
-      
-      
-            SizedBox(height:20,), //The Create Your Account Text and space between Logo
+
+            SizedBox(
+              height: 20,
+            ), //The Create Your Account Text and space between Logo
             Padding(
               padding: const EdgeInsets.only(
                 left: 0,
@@ -1997,73 +2138,80 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               child: Align(
                 alignment: Alignment.center,
-                child: Text('Create your Financial Account', 
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Noto Sans',
-                  fontSize: 40,
+                child: Text(
+                  'Create your Financial Account',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Noto Sans',
+                    fontSize: 40,
+                  ),
                 ),
-                ),
-                ),
+              ),
             ),
-            
-      
-            Padding(                          //Don't have an account? Sign up!
+
+            Padding(
+              //Don't have an account? Sign up!
               padding: const EdgeInsets.only(
                 left: 30,
                 right: 20,
                 top: 1,
                 bottom: 5,
               ),
-              child: Row( // 'Don't have an account?' Sign Up Text and Button
+              child: Row(
+                // 'Don't have an account?' Sign Up Text and Button
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                Text("Already have an account?",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    //fontWeight: FontWeight.bold,
-                    fontFamily: 'Noto Sans',
-                    fontSize: 15,
-                  ),
-                ),     
-                TextButton(
-                  onPressed: (){ 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()), //Goes to Log in page
-                    );
-                    // Do thing after they press this
-                  },
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.transparent), //Removes highlight when hovering on 'Forgot Password'
-                  ),
-      
-                  child: Text( // Log In Button from Sign up screen
-                    "Login!",
+                  Text(
+                    "Already have an account?",
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      //fontWeight: FontWeight.bold,
                       fontFamily: 'Noto Sans',
                       fontSize: 15,
-                      shadows: [
-                        Shadow(
-                            color: Theme.of(context).colorScheme.primary, //colour of text (it's a shadow, ik, but it works)
-                            offset: Offset(0, -1))
-                      ],
-                      color: Colors.transparent,
-                      decoration:
-                      TextDecoration.underline,
-                      decorationColor: Theme.of(context).colorScheme.primary,
-                      decorationThickness: 1,
                     ),
                   ),
-                ),   
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MyHomePage()), //Goes to Log in page
+                      );
+                      // Do thing after they press this
+                    },
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(Colors
+                          .transparent), //Removes highlight when hovering on 'Forgot Password'
+                    ),
+                    child: Text(
+                      // Log In Button from Sign up screen
+                      "Login!",
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Noto Sans',
+                        fontSize: 15,
+                        shadows: [
+                          Shadow(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary, //colour of text (it's a shadow, ik, but it works)
+                              offset: Offset(0, -1))
+                        ],
+                        color: Colors.transparent,
+                        decoration: TextDecoration.underline,
+                        decorationColor: Theme.of(context).colorScheme.primary,
+                        decorationThickness: 1,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-      
-      
-            Padding(          // The text and padding between Email and Email Text Field
+
+            Padding(
+              // The text and padding between Email and Email Text Field
               padding: const EdgeInsets.only(
                 left: 400,
                 right: 20,
@@ -2071,14 +2219,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 bottom: 5,
               ),
               child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("E-Mail", 
-                textAlign: TextAlign.left,)
-                ),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "E-Mail",
+                    textAlign: TextAlign.left,
+                  )),
             ),
-            
-      
-            Padding(                          //E-MAIL TEXT FIELD
+
+            Padding(
+              //E-MAIL TEXT FIELD
               padding: const EdgeInsets.only(
                 left: 390,
                 right: 400,
@@ -2089,24 +2238,26 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: 460,
                 height: 50,
                 child: TextField(
+                  controller: addEmailController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                    floatingLabelBehavior: FloatingLabelBehavior
+                        .never, //Removes annoying floating label text on click
                     labelText: 'E-Mail',
-                    labelStyle: TextStyle( //Changes label Text Font
-                      fontFamily: 'Nato Sans'
-                    ),
+                    labelStyle: TextStyle(
+                        //Changes label Text Font
+                        fontFamily: 'Nato Sans'),
                     hintText: 'Enter valid E-Mail',
-                    hintStyle: TextStyle( //Changes hint Text Font
-                      fontFamily: 'Nato Sans'
-                    ),
+                    hintStyle: TextStyle(
+                        //Changes hint Text Font
+                        fontFamily: 'Nato Sans'),
                   ),
                 ),
               ),
             ),
-      
-      
-            Padding(          // The text and padding between Password and Password Text Field
+
+            Padding(
+              // The text and padding between Password and Password Text Field
               padding: const EdgeInsets.only(
                 left: 400,
                 right: 20,
@@ -2114,15 +2265,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 bottom: 5,
               ),
               child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Password", 
-                textAlign: TextAlign.left,
-                )
-                ),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Password",
+                    textAlign: TextAlign.left,
+                  )),
             ),
-      
-      
-            Padding(                          //PASSWORD TEXT FIELD
+
+            Padding(
+              //PASSWORD TEXT FIELD
               padding: const EdgeInsets.only(
                 left: 390,
                 right: 400,
@@ -2133,24 +2284,28 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: 460,
                 height: 50,
                 child: TextField(
-                  obscureText: true, //Adds the Asteriks for Password confidentiality
+                  controller: addPasswordController,
+                  obscureText:
+                      true, //Adds the Asteriks for Password confidentiality
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
+                    floatingLabelBehavior: FloatingLabelBehavior
+                        .never, //Removes annoying floating label text on click
                     labelText: 'Password',
-                    labelStyle: TextStyle( //Changes Font
-                      fontFamily: 'Nato Sans'
-                    ),
+                    labelStyle: TextStyle(
+                        //Changes Font
+                        fontFamily: 'Nato Sans'),
                     hintText: 'Enter your Password',
-                    hintStyle: TextStyle( //Changes Font
-                      fontFamily: 'Nato Sans'
-                    ),
+                    hintStyle: TextStyle(
+                        //Changes Font
+                        fontFamily: 'Nato Sans'),
                   ),
                 ),
               ),
             ),
-      
-            Padding(                          //NEXT BUTTON
+
+            Padding(
+              //NEXT BUTTON
               padding: const EdgeInsets.only(
                 left: 0,
                 right: 10,
@@ -2159,46 +2314,61 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               child: Align(
                 alignment: Alignment.center,
-                child: SizedBox( //Box inwhich button is kept within to control size
+                child: SizedBox(
+                  //Box inwhich button is kept within to control size
                   width: 460,
                   height: 50,
                   child: OutlinedButton(
-                    style: OutlinedButton.styleFrom( //Style button to make it more rectangular but with rounded edges
-                      backgroundColor: Theme.of(context).colorScheme.onBackground,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      side: BorderSide.none, //Removes border colour from button
-                    ),
-                    onPressed: (){ //After clicking Login
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FinancialAccountCreationPage()),
-                      );
-                    }, 
-                    child: Text('Next')),
+                      style: OutlinedButton.styleFrom(
+                        //Style button to make it more rectangular but with rounded edges
+                        backgroundColor:
+                            Theme.of(context).colorScheme.onBackground,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        side:
+                            BorderSide.none, //Removes border colour from button
+                      ),
+                      onPressed: () {
+                        //After clicking Login
+                        email = addEmailController.text;
+                        password= addPasswordController.text;
+                        print(email);
+                        print(password);
+                        var url = "http://127.0.0.1:5000/login?email=$email&password=$password";
+                        var value= GetData(url);
+                        print(value);
+                        print(url);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  FinancialAccountCreationPage()),
+                        );
+                      },
+                      child: Text('Next')),
                 ),
               ),
             ),
-            
-      
           ],
         ),
       ),
     );
-    
   }
 }
 
-class FinancialAccountCreationPage extends StatefulWidget{
+class FinancialAccountCreationPage extends StatefulWidget {
   static DateTime selectedDate = DateTime.now();
 
-  
   @override
-  State<FinancialAccountCreationPage> createState() => _FinancialAccountCreationPageState();
+  State<FinancialAccountCreationPage> createState() =>
+      _FinancialAccountCreationPageState();
 }
 
-class _FinancialAccountCreationPageState extends State<FinancialAccountCreationPage> {
-  
+class _FinancialAccountCreationPageState
+    extends State<FinancialAccountCreationPage> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -2253,7 +2423,7 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Back'), // Back text
-          
+
           // Complete Account Creation Button
           actions: [
             Padding(
@@ -2266,7 +2436,8 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                     padding: const EdgeInsets.only(
                       right: 20,
                     ),
-                    child: Text('Complete',
+                    child: Text(
+                      'Complete',
                       style: TextStyle(
                         fontFamily: 'Open Sans',
                         fontWeight: FontWeight.bold,
@@ -2275,18 +2446,18 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.check),
-                    iconSize: 25,
-                    tooltip: 'Complete',
-                    onPressed: () {
-                      // Go to home page
-                      Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context) => MainPage(),
-                        ),
+                      icon: const Icon(Icons.check),
+                      iconSize: 25,
+                      tooltip: 'Complete',
+                      onPressed: () {
+                        // Go to home page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainPage(),
+                          ),
                         );
-                    }
-                  ),
+                      }),
                 ],
               ),
             )
@@ -2317,40 +2488,42 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
         //  TABS
         body: TabBarView(
           children: <Widget>[
-
             // FIRST TAB
             Scaffold(
-              body: Container(
-                decoration: BoxDecoration( //Adds logo image to container
-                  color: Colors.white10.withOpacity(1),
-                  image: DecorationImage(
-                    //alignment: Alignment.topCenter,
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/images/home_background2.jpg'), //Image
-                    opacity: 0.5,
-                  ),
+                body: Container(
+              decoration: BoxDecoration(
+                //Adds logo image to container
+                color: Colors.white10.withOpacity(1),
+                image: DecorationImage(
+                  //alignment: Alignment.topCenter,
+                  fit: BoxFit.fill,
+                  image:
+                      AssetImage('assets/images/home_background2.jpg'), //Image
+                  opacity: 0.5,
                 ),
-                child: Column(
-                  children: [
-              
-                    // FINANCES
-              
-                    Padding(          // The text and padding between Card Type and Salary Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 40,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Select Credit Card*", 
-                        textAlign: TextAlign.left,)
-                        ),
+              ),
+              child: Column(
+                children: [
+                  // FINANCES
+
+                  Padding(
+                    // The text and padding between Card Type and Salary Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 40,
+                      bottom: 5,
                     ),
-                    
-                          
-                    Padding(                          //CARD TYPE POP UP/DROP DOWN MENU
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Select Credit Card*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
+
+                  Padding(
+                      //CARD TYPE POP UP/DROP DOWN MENU
                       padding: const EdgeInsets.only(
                         left: 50,
                         right: 400,
@@ -2359,38 +2532,46 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                       ),
                       child: Align(
                         alignment: Alignment.centerLeft,
-              
-                        //    CREDIT CARD POP UP/DROP DOWN MENU 
+
+                        //    CREDIT CARD POP UP/DROP DOWN MENU
                         child: Container(
                           width: 135,
                           height: 50,
                           decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                            borderRadius: BorderRadius.all(Radius.circular(5))
-                          ),
-                          child: PopupMenuButton( //Create pop up menu
-                            shape: RoundedRectangleBorder( //Change border for menu
-                            side: BorderSide(style: BorderStyle.solid, width: 0.3), //adds a line around the border
-                            borderRadius: BorderRadius.all(Radius.circular(5.0))
-                            ), 
+                              border: Border.all(
+                                  width: 1,
+                                  color: Colors.black.withOpacity(0.5)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: PopupMenuButton(
+                            //Create pop up menu
+                            shape: RoundedRectangleBorder(
+                                //Change border for menu
+                                side: BorderSide(
+                                    style: BorderStyle.solid,
+                                    width: 0.3), //adds a line around the border
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0))),
                             // Configure pop up menu
                             itemBuilder: (context) {
-                              return appState.creditCardList.map((str) { // Create drop down menu items from given list
+                              return appState.creditCardList.map((str) {
+                                // Create drop down menu items from given list
                                 return PopupMenuItem(
                                   value: str,
-                                  child: Text(str,
+                                  child: Text(
+                                    str,
                                     //little bit of style for the text
                                     style: TextStyle(
                                       fontFamily: 'Nato Sans',
                                       fontSize: 15,
                                     ),
                                   ),
-                                  
                                 );
                               }).toList();
                             },
-              
-                            child: Row( // Displayed Choice and Icon
+
+                            child: Row(
+                              // Displayed Choice and Icon
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
@@ -2398,271 +2579,296 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                   padding: const EdgeInsets.only(
                                     left: 10,
                                   ),
-                                  child: Text(appState.creditcard, //selected card text
-              
+                                  child: Text(
+                                    appState.creditcard, //selected card text
                                   ),
                                 ),
                                 Icon(Icons.credit_card),
                               ],
                             ),
-              
-                            onSelected: (String? choice) { // Called when the user selects an item
-                              appState.creditcard = choice!; // Set global variable to chosen card
+
+                            onSelected: (String? choice) {
+                              // Called when the user selects an item
+                              appState.creditcard =
+                                  choice!; // Set global variable to chosen card
                               setState(() {
-                                dropdownValue = appState.creditcard; // Update selected
+                                dropdownValue =
+                                    appState.creditcard; // Update selected
                               });
                             },
                           ),
-                          ),
-                          )
                         ),
-              
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Beginning Balance*", 
-                        textAlign: TextAlign.left,
-                        )
-                        ),
-                    ),
-                          
-                          
-                    Padding(                          //BEGINNING BALANCE TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 50,
-                          child: TextField(
-                            controller: balanceController, // Get User Input
-                            onChanged: (value) { // If any text is entered
-                              beginningbalance = balanceController.text;
-                              if (beginningbalance != ""){
-                                appState.balance = double.parse(beginningbalance);
-                                appState.beginbalance = double.parse(beginningbalance);
-                              }
-                            },
+                      )),
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Balance',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ), 
-                          
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Enter your Annual Income*", 
-                        textAlign: TextAlign.left,
-                        )
-                        ),
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
                     ),
-                          
-                          
-                    Padding(                          //INCOME TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
+                    child: Align(
                         alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 50,
-                          child: TextField(
-                            controller: annualincomeController, //Get user input
-                            onChanged: (value) { // If any text is entered
-                              annualincome = annualincomeController.text;
-                              if (annualincome != ""){
-                                appState.annualincome = double.parse(annualincome);
-                              }
-                            },
+                        child: Text(
+                          "Beginning Balance*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Income',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                  Padding(
+                    //BEGINNING BALANCE TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
                     ),
-              
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Enter your Overall Monthly Living Expenses*", 
-                        textAlign: TextAlign.left,
-                        )
-                        ),
-                    ),
-              
-                    Padding(                          //LIVING EXPENSE TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 50,
-                          child: TextField(
-                            controller: livingexpenseController, //Get User Input
-                            onChanged: (value) { // If any text is entered
-                              livingexpense = livingexpenseController.text;
-                              if (livingexpense != ""){
-                                appState.livingexpense = double.parse(livingexpense);
-                              }
-                            },
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 50,
+                        child: TextField(
+                          controller: balanceController, // Get User Input
+                          onChanged: (value) {
+                            // If any text is entered
+                            beginningbalance = balanceController.text;
+                            if (beginningbalance != "") {
+                              appState.balance = double.parse(beginningbalance);
+                              appState.beginbalance =
+                                  double.parse(beginningbalance);
+                            }
+                          },
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Monthly Expense',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Balance',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
                           ),
                         ),
                       ),
                     ),
-              
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
+                  ),
+
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Enter your Annual Income*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
+
+                  Padding(
+                    //INCOME TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 50,
+                        child: TextField(
+                          controller: annualincomeController, //Get user input
+                          onChanged: (value) {
+                            // If any text is entered
+                            annualincome = annualincomeController.text;
+                            if (annualincome != "") {
+                              appState.annualincome =
+                                  double.parse(annualincome);
+                            }
+                          },
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Income',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
+                          ),
+                        ),
                       ),
-                      child: Align(
+                    ),
+                  ),
+
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Enter your Overall Monthly Living Expenses*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
+
+                  Padding(
+                    //LIVING EXPENSE TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 50,
+                        child: TextField(
+                          controller: livingexpenseController, //Get User Input
+                          onChanged: (value) {
+                            // If any text is entered
+                            livingexpense = livingexpenseController.text;
+                            if (livingexpense != "") {
+                              appState.livingexpense =
+                                  double.parse(livingexpense);
+                            }
+                          },
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Monthly Expense',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(
                           children: [
-                            Text("Enter your Overall Subscriptions Expenses", 
-                            textAlign: TextAlign.left,
+                            Text(
+                              "Enter your Overall Subscriptions Expenses",
+                              textAlign: TextAlign.left,
                             ),
-                            Text("  (Optional)",
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                            ), 
-                            textAlign: TextAlign.left,
+                            Text(
+                              "  (Optional)",
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                              ),
+                              textAlign: TextAlign.left,
                             ),
                           ],
-                        )
-                        ),
-                    ),
-              
-                    Padding(                          //SUBSCRIPTION EXPENSE TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 50,
-                          child: TextField(
-                            controller: subscriptionexpenseController, // Get User Input
-                            onChanged: (value) { // If any text is entered
-                              subscriptionexpense = subscriptionexpenseController.text;
-                              if (subscriptionexpense != ""){
-                                appState.subscriptionexpense = double.parse(subscriptionexpense);
-                              }
-                            },
+                        )),
+                  ),
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Subscription Expense',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
+                  Padding(
+                    //SUBSCRIPTION EXPENSE TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 50,
+                        child: TextField(
+                          controller:
+                              subscriptionexpenseController, // Get User Input
+                          onChanged: (value) {
+                            // If any text is entered
+                            subscriptionexpense =
+                                subscriptionexpenseController.text;
+                            if (subscriptionexpense != "") {
+                              appState.subscriptionexpense =
+                                  double.parse(subscriptionexpense);
+                            }
+                          },
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Subscription Expense',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              )
+                  ),
+                ],
               ),
+            )),
 
             //  SECOND TAB
             Scaffold(
-              body: Container(
-                decoration: BoxDecoration( //Adds image to container
-                  color: Colors.white10.withOpacity(1),
-                  image: DecorationImage(
-                    //alignment: Alignment.topCenter,
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/images/home_background2.jpg'), //Image
-                    opacity: 0.5,
-                  ),
+                body: Container(
+              decoration: BoxDecoration(
+                //Adds image to container
+                color: Colors.white10.withOpacity(1),
+                image: DecorationImage(
+                  //alignment: Alignment.topCenter,
+                  fit: BoxFit.fill,
+                  image:
+                      AssetImage('assets/images/home_background2.jpg'), //Image
+                  opacity: 0.5,
                 ),
-                child: Column(
-                  children: [
-              
-                    // TAXES & INTERESTS
-              
-                    Padding(          // The text and padding between Card Type and Salary Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 40,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Filing Status*", 
-                        textAlign: TextAlign.left,)
-                        ),
+              ),
+              child: Column(
+                children: [
+                  // TAXES & INTERESTS
+
+                  Padding(
+                    // The text and padding between Card Type and Salary Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 40,
+                      bottom: 5,
                     ),
-                    
-                          
-                    Padding(                          //FILING STATUS POP UP/DROP DOWN MENU
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Filing Status*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
+
+                  Padding(
+                      //FILING STATUS POP UP/DROP DOWN MENU
                       padding: const EdgeInsets.only(
                         left: 50,
                         right: 400,
@@ -2671,38 +2877,47 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                       ),
                       child: Align(
                         alignment: Alignment.centerLeft,
-              
-                        //    FILING STATUS POP UP/DROP DOWN MENU 
+
+                        //    FILING STATUS POP UP/DROP DOWN MENU
                         child: Container(
                           width: 110,
                           height: 50,
-                          decoration: BoxDecoration( // Adds border
-                            border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                            borderRadius: BorderRadius.all(Radius.circular(5))
-                          ),
-                          child: PopupMenuButton( //Create pop up menu
-                            shape: RoundedRectangleBorder( //Change border for menu
-                            side: BorderSide(style: BorderStyle.solid, width: 0.3), //adds a line around the border
-                            borderRadius: BorderRadius.all(Radius.circular(5.0))
-                            ), 
+                          decoration: BoxDecoration(
+                              // Adds border
+                              border: Border.all(
+                                  width: 1,
+                                  color: Colors.black.withOpacity(0.5)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: PopupMenuButton(
+                            //Create pop up menu
+                            shape: RoundedRectangleBorder(
+                                //Change border for menu
+                                side: BorderSide(
+                                    style: BorderStyle.solid,
+                                    width: 0.3), //adds a line around the border
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0))),
                             // Configure pop up menu
                             itemBuilder: (context) {
-                              return appState.marriedOrSingleList.map((str) { // Create drop down menu items from given list
+                              return appState.marriedOrSingleList.map((str) {
+                                // Create drop down menu items from given list
                                 return PopupMenuItem(
                                   value: str,
-                                  child: Text(str,
+                                  child: Text(
+                                    str,
                                     //little bit of style for the text
                                     style: TextStyle(
                                       fontFamily: 'Nato Sans',
                                       fontSize: 15,
                                     ),
                                   ),
-                                  
                                 );
                               }).toList();
                             },
-              
-                            child: Row( // Displayed Choice and Icon
+
+                            child: Row(
+                              // Displayed Choice and Icon
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
@@ -2710,12 +2925,13 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                   padding: const EdgeInsets.only(
                                     left: 10,
                                   ),
-                                  child: Text(appState.singlemarried, //selected card text
-              
+                                  child: Text(
+                                    appState.singlemarried, //selected card text
                                   ),
                                 ),
                                 // ICON
-                                Padding( // spaces between icon and chosen filing status
+                                Padding(
+                                  // spaces between icon and chosen filing status
                                   padding: const EdgeInsets.only(
                                     left: 5,
                                   ),
@@ -2723,163 +2939,176 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                 ),
                               ],
                             ),
-              
-                            onSelected: (String? choice) { // Called when the user selects an item
-                              appState.singlemarried = choice!; // Set global variable to chosen card
+
+                            onSelected: (String? choice) {
+                              // Called when the user selects an item
+                              appState.singlemarried =
+                                  choice!; // Set global variable to chosen card
                               setState(() {
-                                dropdownValue = appState.singlemarried; // Update selected
+                                dropdownValue =
+                                    appState.singlemarried; // Update selected
                               });
                             },
                           ),
-                          ),
-                          )
                         ),
-              
-                          
-                          
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
+                      )),
+
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(
                           children: [
-                            Text("Mortgage Interest", 
-                            textAlign: TextAlign.left,
+                            Text(
+                              "Mortgage Interest",
+                              textAlign: TextAlign.left,
                             ),
-                            Text("  (Optional)",
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                            ), 
-                            textAlign: TextAlign.left,
+                            Text(
+                              "  (Optional)",
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                              ),
+                              textAlign: TextAlign.left,
                             ),
                           ],
-                        )
-                        ),
-                    ),
-                          
-                          
-                    Padding(                          //MORTGAGE TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 50,
-                          child: TextField(
-                            controller: mortgageController, // Get User Input
-                            onChanged: (value) { // If any text is entered
-                              mortgage = mortgageController.text;
-                              if (mortgage != ""){
-                                appState.mortgage = double.parse(mortgage);
-                              }
-                            },
+                        )),
+                  ),
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Mortgage',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
+                  Padding(
+                    //MORTGAGE TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 50,
+                        child: TextField(
+                          controller: mortgageController, // Get User Input
+                          onChanged: (value) {
+                            // If any text is entered
+                            mortgage = mortgageController.text;
+                            if (mortgage != "") {
+                              appState.mortgage = double.parse(mortgage);
+                            }
+                          },
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Mortgage',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
                           ),
                         ),
                       ),
                     ),
-              
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Annual Interest Rate (% per year)*", 
-                        textAlign: TextAlign.left,
-                        )
-                        ),
-                    ),
-              
-                    Padding(                          //ANNUAL INTEREST RATE TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 50,
-                          child: TextField(
-                            controller: annualinterestController, // Get User Input
-                            onChanged: (value) { // If any text is entered
-                              annualinterest = annualinterestController.text;
-                              if (annualinterest != ""){
-                                appState.annualinterest = double.parse(annualinterest);
-                              }
-                            },
+                  ),
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Interest Rate',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Annual Interest Rate (% per year)*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
+
+                  Padding(
+                    //ANNUAL INTEREST RATE TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 50,
+                        child: TextField(
+                          controller:
+                              annualinterestController, // Get User Input
+                          onChanged: (value) {
+                            // If any text is entered
+                            annualinterest = annualinterestController.text;
+                            if (annualinterest != "") {
+                              appState.annualinterest =
+                                  double.parse(annualinterest);
+                            }
+                          },
+
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Interest Rate',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
                           ),
                         ),
                       ),
                     ),
-              
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("First Deposit Date (YYYY-MM-DD)*", 
-                        textAlign: TextAlign.left,
-                        )
-                        ),
-                    ),
+                  ),
 
-                    //                     FIRST DEPOSIT DATE CALENDAR
-                    Padding(                          
-                      padding: const EdgeInsets.only( //spacing for select date button
-                        left: 40,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
                         alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 460,
-                          height: 100,
-                          child: Column(
-                            children: [ 
-                              // Sets the Text to be the date chosen
-                              Align(
+                        child: Text(
+                          "First Deposit Date (YYYY-MM-DD)*",
+                          textAlign: TextAlign.left,
+                        )),
+                  ),
+
+                  //                     FIRST DEPOSIT DATE CALENDAR
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      //spacing for select date button
+                      left: 40,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 460,
+                        height: 100,
+                        child: Column(
+                          children: [
+                            // Sets the Text to be the date chosen
+                            Align(
                                 alignment: Alignment.centerLeft,
-                                child: Padding( //spacing for box with displayed date
+                                child: Padding(
+                                  //spacing for box with displayed date
                                   padding: const EdgeInsets.only(
                                     left: 10,
                                     right: 50,
@@ -2888,133 +3117,142 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                   ),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                                      borderRadius: BorderRadius.all(Radius.circular(5))
-                                    ),
+                                        border: Border.all(
+                                            width: 1,
+                                            color:
+                                                Colors.black.withOpacity(0.5)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5))),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        FinancialAccountCreationPage.selectedDate.toString().split(' ')[0]),
+                                      child: Text(FinancialAccountCreationPage
+                                          .selectedDate
+                                          .toString()
+                                          .split(' ')[0]),
                                     ),
                                   ),
                                 )),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 10,
-                                  ),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      _selectDate(context); // Calls function named _selectDate
-                                    },
-                                    child: const Text('Select date',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                ),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    _selectDate(
+                                        context); // Calls function named _selectDate
+                                  },
+                                  child: const Text(
+                                    'Select date',
+                                    style: TextStyle(
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-
-                  ],
-                ),
-              )
+                  ),
+                ],
               ),
+            )),
 
             //  THIRD TAB
             Scaffold(
-              body: Container(
-                decoration: BoxDecoration( //Adds image to container
-                  color: Colors.white10.withOpacity(1),
-                  image: DecorationImage(
-                    //alignment: Alignment.topCenter,
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/images/home_background2.jpg'), //Image
-                    opacity: 0.5,
-                  ),
+                body: Container(
+              decoration: BoxDecoration(
+                //Adds image to container
+                color: Colors.white10.withOpacity(1),
+                image: DecorationImage(
+                  //alignment: Alignment.topCenter,
+                  fit: BoxFit.fill,
+                  image:
+                      AssetImage('assets/images/home_background2.jpg'), //Image
+                  opacity: 0.5,
                 ),
-                child: Column(
-                  children: [
-              
-                    // GOALS
+              ),
+              child: Column(
+                children: [
+                  // GOALS
 
                   Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 40,
-                        bottom: 15,
-                      ),
-                      child: Row(
-                        children: [
-                          Text("Select your Reasons for Saving", 
-                            style: TextStyle(
-                              fontFamily: 'Open Sans',
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left,),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                            ),
-                            child: Text("(can be changed later)", 
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 50,
+                          right: 20,
+                          top: 40,
+                          bottom: 15,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Select your Reasons for Saving",
                               style: TextStyle(
-                                fontSize: 12,
-                                fontStyle: FontStyle.italic,
+                                fontFamily: 'Open Sans',
+                                fontWeight: FontWeight.bold,
                               ),
-                              textAlign: TextAlign.left,),
-                          ),
-                        ],
-                      ),
-                    )
-                    ),
+                              textAlign: TextAlign.left,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                              ),
+                              child: Text(
+                                "(can be changed later)",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
 
-                    //  HOME SAVING CHECKBOX 
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 0,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: [
-                          Align(
+                  //  HOME SAVING CHECKBOX
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 0,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 right: 10,
                               ),
-                              child: Text("House", 
-                              textAlign: TextAlign.left,),
-                            )
-                            ),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 76,
+                              child: Text(
+                                "House",
+                                textAlign: TextAlign.left,
                               ),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: appState.check1,
-                                    onChanged:(bool? value) {
-                                      setState(() {
-                                        check1 = value;
-                                        appState.check1 = check1;
-                                      });
-                                    },
-                                    ),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 76,
+                            ),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: appState.check1,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      check1 = value;
+                                      appState.check1 = check1;
+                                    });
+                                  },
+                                ),
 
                                 //  RETIREMENT SAVINGS CHECKBOX
                                 Padding(
@@ -3027,16 +3265,16 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                   child: Row(
                                     children: [
                                       Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 10,
-                                          ),
-                                          child: Text("Retirement", 
-                                          textAlign: TextAlign.left,),
-                                        )
-                                        ),
-
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 10,
+                                            ),
+                                            child: Text(
+                                              "Retirement",
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          )),
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
@@ -3045,240 +3283,66 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                           ),
                                           child: Checkbox(
                                             value: appState.check2,
-                                            onChanged:(bool? value) {
+                                            onChanged: (bool? value) {
                                               setState(() {
                                                 check2 = value;
                                                 appState.check2 = check2;
                                               });
                                             },
-                                            ),
+                                          ),
                                         ),
-                                      ),   
+                                      ),
                                     ],
                                   ),
                                 ),
-
-                                ],
-                              ),
+                              ],
                             ),
-                          ),   
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    //  TRAVEL SAVINGS CHECKBOX
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 0,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: [
-                          Align(
+                  //  TRAVEL SAVINGS CHECKBOX
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 0,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 right: 10,
                               ),
-                              child: Text("Travel", 
-                              textAlign: TextAlign.left,),
-                            )
+                              child: Text(
+                                "Travel",
+                                textAlign: TextAlign.left,
+                              ),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 77,
                             ),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 77,
-                              ),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: appState.check3,
-                                    onChanged:(bool? value) {
-                                      setState(() {
-                                        check3 = value;
-                                        appState.check3 = check3;
-                                      });
-                                    },
-                                    ),
-
-                                  //  ELECTRONICS SAVINGS CHECKBOX
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 50,
-                                      right: 20,
-                                      top: 0,
-                                      bottom: 5,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              right: 10,
-                                            ),
-                                            child: Text("Electronics", 
-                                            textAlign: TextAlign.left,),
-                                          )
-                                          ),
-
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 44,
-                                            ),
-                                            child: Checkbox(
-                                              value: appState.check4,
-                                              onChanged:(bool? value) {
-                                                setState(() {
-                                                  check4 = value;
-                                                  appState.check4 = check4;
-                                                });
-                                              },
-                                              ),
-                                          ),
-                                        ),   
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),   
-                        ],
-                      ),
-                    ),
-
-                    //  FAMILY SAVINGS CHECKBOX
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 0,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                right: 10,
-                              ),
-                              child: Text("Family", 
-                              textAlign: TextAlign.left,),
-                            )
-                            ),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 75,
-                              ),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: appState.check5,
-                                    onChanged:(bool? value) {
-                                      setState(() {
-                                        check5 = value;
-                                        appState.check5 = check5;
-                                      });
-                                    },
-                                    ),
-
-                                  //  EDUCATION SAVINGS CHECKBOX
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 50,
-                                      right: 20,
-                                      top: 0,
-                                      bottom: 5,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              right: 10,
-                                            ),
-                                            child: Text("Education", 
-                                            textAlign: TextAlign.left,),
-                                          )
-                                          ),
-
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 51,
-                                            ),
-                                            child: Checkbox(
-                                              value: appState.check6,
-                                              onChanged:(bool? value) {
-                                                setState(() {
-                                                  check6 = value;
-                                                  appState.check6 = check6;
-                                                });
-                                              },
-                                              ),
-                                          ),
-                                        ),   
-                                      ],
-                                    ),
-                                  ),
-
-                                ],
-                              ),
-                            ),
-                          ),   
-                        ],
-                      ),
-                    ),
-
-                    //  EMERGENCY FUNDS SAVINGS CHECKBOX
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 0,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                right: 8,
-                              ),
-                              child: Text("Emergency Funds", 
-                              textAlign: TextAlign.left,),
-                            )
-                            ),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
                             child: Row(
                               children: [
                                 Checkbox(
-                                  value: appState.check7,
-                                  onChanged:(bool? value) {
+                                  value: appState.check3,
+                                  onChanged: (bool? value) {
                                     setState(() {
-                                      check7 = value;
-                                      appState.check7 = check7;
+                                      check3 = value;
+                                      appState.check3 = check3;
                                     });
                                   },
-                                  ),
+                                ),
 
-                                //  HOMEWARE SAVINGS CHECKBOX
+                                //  ELECTRONICS SAVINGS CHECKBOX
                                 Padding(
                                   padding: const EdgeInsets.only(
                                     left: 50,
@@ -3289,16 +3353,16 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                   child: Row(
                                     children: [
                                       Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 10,
-                                          ),
-                                          child: Text("Homeware", 
-                                          textAlign: TextAlign.left,),
-                                        )
-                                        ),
-
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 10,
+                                            ),
+                                            child: Text(
+                                              "Electronics",
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          )),
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
@@ -3306,65 +3370,236 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                             left: 44,
                                           ),
                                           child: Checkbox(
-                                            value: appState.check8,
-                                            onChanged:(bool? value) {
+                                            value: appState.check4,
+                                            onChanged: (bool? value) {
                                               setState(() {
-                                                check8 = value;
-                                                appState.check8 = check8;
+                                                check4 = value;
+                                                appState.check4 = check4;
                                               });
                                             },
-                                            ),
+                                          ),
                                         ),
-                                      ),   
+                                      ),
                                     ],
                                   ),
                                 ),
-
                               ],
                             ),
-                          ),   
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    //  SHOPPING SAVINGS CHECKBOX
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 0,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: [
-                          Align(
+                  //  FAMILY SAVINGS CHECKBOX
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 0,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 right: 10,
                               ),
-                              child: Text("Shopping", 
-                              textAlign: TextAlign.left,),
-                            )
+                              child: Text(
+                                "Family",
+                                textAlign: TextAlign.left,
+                              ),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 75,
                             ),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: appState.check5,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      check5 = value;
+                                      appState.check5 = check5;
+                                    });
+                                  },
+                                ),
 
-                          Align(
+                                //  EDUCATION SAVINGS CHECKBOX
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 50,
+                                    right: 20,
+                                    top: 0,
+                                    bottom: 5,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 10,
+                                            ),
+                                            child: Text(
+                                              "Education",
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          )),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 51,
+                                          ),
+                                          child: Checkbox(
+                                            value: appState.check6,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                check6 = value;
+                                                appState.check6 = check6;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  //  EMERGENCY FUNDS SAVINGS CHECKBOX
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 0,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.only(
-                                left: 55,
+                                right: 8,
                               ),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: appState.check9,
-                                    onChanged:(bool? value) {
-                                      setState(() {
-                                        check9 = value;
-                                        appState.check9 = check9;
-                                      });
-                                    },
+                              child: Text(
+                                "Emergency Funds",
+                                textAlign: TextAlign.left,
+                              ),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: appState.check7,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    check7 = value;
+                                    appState.check7 = check7;
+                                  });
+                                },
+                              ),
+
+                              //  HOMEWARE SAVINGS CHECKBOX
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 50,
+                                  right: 20,
+                                  top: 0,
+                                  bottom: 5,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 10,
+                                          ),
+                                          child: Text(
+                                            "Homeware",
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        )),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 44,
+                                        ),
+                                        child: Checkbox(
+                                          value: appState.check8,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              check8 = value;
+                                              appState.check8 = check8;
+                                            });
+                                          },
+                                        ),
+                                      ),
                                     ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  //  SHOPPING SAVINGS CHECKBOX
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 0,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 10,
+                              ),
+                              child: Text(
+                                "Shopping",
+                                textAlign: TextAlign.left,
+                              ),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 55,
+                            ),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: appState.check9,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      check9 = value;
+                                      appState.check9 = check9;
+                                    });
+                                  },
+                                ),
 
                                 //  MORTGAGE DOWN PAYMENT SAVINGS CHECKBOX
                                 Padding(
@@ -3377,16 +3612,16 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                   child: Row(
                                     children: [
                                       Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 10,
-                                          ),
-                                          child: Text("Mortgage", 
-                                          textAlign: TextAlign.left,),
-                                        )
-                                        ),
-
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 10,
+                                            ),
+                                            child: Text(
+                                              "Mortgage",
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          )),
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
@@ -3395,182 +3630,180 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
                                           ),
                                           child: Checkbox(
                                             value: appState.check10,
-                                            onChanged:(bool? value) {
+                                            onChanged: (bool? value) {
                                               setState(() {
                                                 check10 = value;
                                                 appState.check10 = check10;
                                               });
                                             },
-                                            ),
+                                          ),
                                         ),
-                                      ),   
+                                      ),
                                     ],
                                   ),
                                 ),
-
-                                ],
-                              ),
+                              ],
                             ),
-                          ),   
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    //  CAR SAVINGS CHECKBOX
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 0,
-                        bottom: 5,
-                      ),
-                      child: Row(
-                        children: [
-                          Align(
+                  //  CAR SAVINGS CHECKBOX
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 0,
+                      bottom: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
                               padding: const EdgeInsets.only(
                                 right: 10,
                               ),
-                              child: Text("Car", 
-                              textAlign: TextAlign.left,),
-                            )
-                            ),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 97,
+                              child: Text(
+                                "Car",
+                                textAlign: TextAlign.left,
                               ),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: appState.check11,
-                                    onChanged:(bool? value) {
-                                      setState(() {
-                                        check11 = value;
-                                        appState.check11 = check11;
-                                      });
-                                    },
-                                    ),
+                            )),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 97,
+                            ),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: appState.check11,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      check11 = value;
+                                      appState.check11 = check11;
+                                    });
+                                  },
+                                ),
 
-                                  //  OTHER SAVINGS CHECKBOX
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 50,
-                                      right: 20,
-                                      top: 0,
-                                      bottom: 5,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Align(
+                                //  OTHER SAVINGS CHECKBOX
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 50,
+                                    right: 20,
+                                    top: 0,
+                                    bottom: 5,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Align(
                                           alignment: Alignment.centerLeft,
                                           child: Padding(
                                             padding: const EdgeInsets.only(
                                               right: 10,
                                             ),
-                                            child: Text("Other", 
-                                            textAlign: TextAlign.left,),
-                                          )
-                                          ),
-
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 80,
+                                            child: Text(
+                                              "Other",
+                                              textAlign: TextAlign.left,
                                             ),
-                                            child: Checkbox(
-                                              value: appState.check12,
-                                              onChanged:(bool? value) {
-                                                setState(() {
-                                                  check12 = value;
-                                                  appState.check12 = check12;
-                                                });
-                                              },
-                                              ),
+                                          )),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 80,
                                           ),
-                                        ),   
-                                      ],
-                                    ),
+                                          child: Checkbox(
+                                            value: appState.check12,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                check12 = value;
+                                                appState.check12 = check12;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ),   
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    Padding(          // The text and padding between Text Field
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 20,
-                        top: 15,
-                        bottom: 5,
-                      ),
-                      child: Align(
+                  Padding(
+                    // The text and padding between Text Field
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 20,
+                      top: 15,
+                      bottom: 5,
+                    ),
+                    child: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(
                           children: [
-                            Text("Savings Goal", 
-                            textAlign: TextAlign.left,
+                            Text(
+                              "Savings Goal",
+                              textAlign: TextAlign.left,
                             ),
-                            Text("   (can be changed later)",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontStyle: FontStyle.italic,
-                            ), 
-                            textAlign: TextAlign.left,
+                            Text(
+                              "   (can be changed later)",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic,
+                              ),
+                              textAlign: TextAlign.left,
                             ),
                           ],
-                        )
-                        ),
-                    ),
-                          
-                          
-                    Padding(                          //GOAL TEXT FIELD
-                      padding: const EdgeInsets.only(
-                        left: 50,
-                        right: 400,
-                        top: 0,
-                        bottom: 0,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 235,
-                          height: 50,
-                          child: TextField(
-                            controller: savingsgoalController,
-                            onChanged: (value) { // If any text is entered
-                              savingsgoal = savingsgoalController.text;
-                              if (savingsgoal != ""){
-                                appState.savingsgoal = double.parse(savingsgoal);
-                              }
-                            },
+                        )),
+                  ),
 
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior: FloatingLabelBehavior.never, //Removes annoying floating label text on click
-                              labelText: 'Default: 2x Balance',
-                              labelStyle: TextStyle( //Changes Font
-                                fontFamily: 'Nato Sans'
-                              ),
-                            ),
+                  Padding(
+                    //GOAL TEXT FIELD
+                    padding: const EdgeInsets.only(
+                      left: 50,
+                      right: 400,
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 235,
+                        height: 50,
+                        child: TextField(
+                          controller: savingsgoalController,
+                          onChanged: (value) {
+                            // If any text is entered
+                            savingsgoal = savingsgoalController.text;
+                            if (savingsgoal != "") {
+                              appState.savingsgoal = double.parse(savingsgoal);
+                            }
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Removes annoying floating label text on click
+                            labelText: 'Default: 2x Balance',
+                            labelStyle: TextStyle(
+                                //Changes Font
+                                fontFamily: 'Nato Sans'),
                           ),
                         ),
                       ),
                     ),
-
-
-                  ],
-                ),
-              )
+                  ),
+                ],
               ),
+            )),
           ],
         ),
       ),
@@ -3578,8 +3811,7 @@ class _FinancialAccountCreationPageState extends State<FinancialAccountCreationP
   }
 }
 
-class BudgetPage extends StatefulWidget{
-
+class BudgetPage extends StatefulWidget {
   @override
   State<BudgetPage> createState() => _BudgetPageState();
 }
@@ -3587,67 +3819,58 @@ class BudgetPage extends StatefulWidget{
 class _BudgetPageState extends State<BudgetPage> {
   @override
   Widget build(BuildContext context) {
-    
     var appState = context.watch<MyAppState>();
     var theme = Theme.of(context);
-    List<Color> piechartcolours = [Colors.lightGreen.withOpacity(0.6), Colors.red.withOpacity(0.6)]; //Create list of colours for pie chart
+    List<Color> piechartcolours = [
+      Colors.lightGreen.withOpacity(0.6),
+      Colors.red.withOpacity(0.6)
+    ]; //Create list of colours for pie chart
     //String piechartText = "Income \n ${appState.income + appState.beginbalance}"; // Income = Monthly Income + Initial Balance. Shows in chart center
-    String piechartText = "Total Income \n ${appState.income} \n\n Gross Balance \n ${appState.beginbalance+appState.income}"; // Income = Income, Gross Balance = Income + Beginning Balance
+    String piechartText =
+        "Total Income \n ${appState.income} \n\n Gross Balance \n ${appState.beginbalance + appState.income}"; // Income = Income, Gross Balance = Income + Beginning Balance
 
     // Get Month:
     DateTime currentDate = DateTime.now(); //Get Current Date
     var monthNumber = "${currentDate.month}"; //Get Current Month (as integer)
     var currentMonth;
     var nextMonth;
-    if (int.parse(monthNumber) == 1){
+    if (int.parse(monthNumber) == 1) {
       currentMonth = "January";
       nextMonth = "February";
-    }
-    else if(int.parse(monthNumber) == 2){
+    } else if (int.parse(monthNumber) == 2) {
       currentMonth = "February";
       nextMonth = "March";
-    }
-    else if(int.parse(monthNumber) == 3){
+    } else if (int.parse(monthNumber) == 3) {
       currentMonth = "March";
       nextMonth = "April";
-    }
-    else if(int.parse(monthNumber) == 4){
+    } else if (int.parse(monthNumber) == 4) {
       currentMonth = "April";
       nextMonth = "May";
-    }
-    else if(int.parse(monthNumber) == 5){
+    } else if (int.parse(monthNumber) == 5) {
       currentMonth = "May";
       nextMonth = "June";
-    }
-    else if(int.parse(monthNumber) == 6){
+    } else if (int.parse(monthNumber) == 6) {
       currentMonth = "June";
       nextMonth = "July";
-    }
-    else if(int.parse(monthNumber) == 7){
+    } else if (int.parse(monthNumber) == 7) {
       currentMonth = "July";
       nextMonth = "August";
-    }
-    else if(int.parse(monthNumber) == 8){
+    } else if (int.parse(monthNumber) == 8) {
       currentMonth = "August";
       nextMonth = "September";
-    }
-    else if(int.parse(monthNumber) == 9){
+    } else if (int.parse(monthNumber) == 9) {
       currentMonth = "September";
       nextMonth = "October";
-    }
-    else if(int.parse(monthNumber) == 10){
+    } else if (int.parse(monthNumber) == 10) {
       currentMonth = "October";
       nextMonth = "November";
-    }
-    else if(int.parse(monthNumber) == 11){
+    } else if (int.parse(monthNumber) == 11) {
       currentMonth = "November";
       nextMonth = "December";
-    }
-    else if(int.parse(monthNumber) == 12){
+    } else if (int.parse(monthNumber) == 12) {
       currentMonth = "December";
       nextMonth = "January";
     }
-
 
     //Create Data points for pie chart
     //DO: Replace with 'Needs, Wants, Savings' once categories are implemented for expenses
@@ -3659,7 +3882,8 @@ class _BudgetPageState extends State<BudgetPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding( // BUDGET HEADING
+            Padding(
+              // BUDGET HEADING
               padding: const EdgeInsets.only(
                 left: 50,
                 right: 0,
@@ -3668,19 +3892,20 @@ class _BudgetPageState extends State<BudgetPage> {
               ),
               child: Align(
                 alignment: Alignment.topLeft,
-                child: Text("Budget",
+                child: Text(
+                  "Budget",
                   style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Nato Sans"
-                  ),
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Nato Sans"),
                 ),
               ),
             ),
-      
+
             //Divider(),
-      
-            Padding( // DATE HEADING
+
+            Padding(
+              // DATE HEADING
               padding: const EdgeInsets.only(
                 left: 0,
                 right: 70,
@@ -3690,17 +3915,18 @@ class _BudgetPageState extends State<BudgetPage> {
               child: Align(
                 alignment: Alignment.center,
                 //Sets date to current month - next month
-                child: Text("${currentMonth.toString()} - ${nextMonth.toString()}",
+                child: Text(
+                  "${currentMonth.toString()} - ${nextMonth.toString()}",
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Nato Sans"
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Nato Sans"),
                 ),
               ),
             ),
-      
-            Padding( // REMAINING TO BUDGET HEADING
+
+            Padding(
+              // REMAINING TO BUDGET HEADING
               padding: const EdgeInsets.only(
                 left: 0,
                 right: 70,
@@ -3709,35 +3935,35 @@ class _BudgetPageState extends State<BudgetPage> {
               ),
               child: Row(
                 children: [
-                  Expanded( //Center below text
+                  Expanded(
+                    //Center below text
                     child: Text(''),
                   ),
                   // The Remaining Number
-                  Text(appState.balance.toStringAsFixed(2),
+                  Text(
+                    appState.balance.toStringAsFixed(2),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Nato Sans"
-                    ),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Nato Sans"),
                   ),
                   // The Text After
-                  Text(" left to Budget",
+                  Text(
+                    " left to Budget",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: "Nato Sans"
-                    ),
+                    style: TextStyle(fontSize: 13, fontFamily: "Nato Sans"),
                   ),
-                  Expanded( //Center above text
+                  Expanded(
+                    //Center above text
                     child: Text(''),
                   ),
                 ],
               ),
             ),
-      
+
             Divider(), //Horizontal Line
-      
+
             //Everything below Budget Heading
             Row(
               children: [
@@ -3748,38 +3974,44 @@ class _BudgetPageState extends State<BudgetPage> {
                     top: 30,
                     bottom: 15,
                   ),
-                  child: PieChart(  // PIE CHART
+                  child: PieChart(
+                    // PIE CHART
                     dataMap: dataMap,
                     initialAngleInDegree: 180, //Change this to rotate the chart
-                    chartType: ChartType.ring, // Set the pie chart type to be a ring, use 'disc' otherwise
-                    chartRadius: MediaQuery.of(context).size.width/6, // Size of Pie Chart
-                    centerText: piechartText, //Sets the text in the center of chart
+                    chartType: ChartType
+                        .ring, // Set the pie chart type to be a ring, use 'disc' otherwise
+                    chartRadius: MediaQuery.of(context).size.width /
+                        6, // Size of Pie Chart
+                    centerText:
+                        piechartText, //Sets the text in the center of chart
                     chartLegendSpacing: 32, //Distance of legend from Pie Chart
-                    animationDuration: Duration(milliseconds: 1200), //Length of Pie Chart animation
-                    colorList: piechartcolours, //Set pie chart colours, variable initialized earlier
+                    animationDuration: Duration(
+                        milliseconds: 1200), //Length of Pie Chart animation
+                    colorList:
+                        piechartcolours, //Set pie chart colours, variable initialized earlier
                     legendOptions: LegendOptions(
-                      legendShape: BoxShape.circle, //Makes the legends boxes circles
-                      legendTextStyle: TextStyle(
-                        fontFamily: 'Nato Sans',
-                        fontWeight: FontWeight.bold,
-                      )
-                    ),
-                    chartValuesOptions: ChartValuesOptions( //Configure values in chart
-                      showChartValues: true,
-                      showChartValuesOutside: true,
-                      showChartValuesInPercentage: true,
-                      showChartValueBackground: true,
-                      chartValueBackgroundColor: Colors.grey.withOpacity(0),
-                      chartValueStyle: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Roboto',
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      )
-                    ),
-                    ),
+                        legendShape:
+                            BoxShape.circle, //Makes the legends boxes circles
+                        legendTextStyle: TextStyle(
+                          fontFamily: 'Nato Sans',
+                          fontWeight: FontWeight.bold,
+                        )),
+                    chartValuesOptions: ChartValuesOptions(
+                        //Configure values in chart
+                        showChartValues: true,
+                        showChartValuesOutside: true,
+                        showChartValuesInPercentage: true,
+                        showChartValueBackground: true,
+                        chartValueBackgroundColor: Colors.grey.withOpacity(0),
+                        chartValueStyle: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Roboto',
+                          //fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        )),
+                  ),
                 ),
-      
+
                 // INCOME CHANNELS FOR MONTH
                 Padding(
                   padding: const EdgeInsets.only(
@@ -3792,9 +4024,10 @@ class _BudgetPageState extends State<BudgetPage> {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(
-                      top: 10,
+                        top: 10,
                       ),
-                      child: Align( //align container
+                      child: Align(
+                        //align container
                         alignment: Alignment.centerLeft,
                         child: Container(
                           width: 500,
@@ -3803,30 +4036,39 @@ class _BudgetPageState extends State<BudgetPage> {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             color: Colors.grey.withOpacity(0.2),
                           ),
-      
-                          child: Align( //align everything inside box
+                          child: Align(
+                            //align everything inside box
                             alignment: Alignment.centerLeft,
                             child: SizedBox(
                               width: 780,
                               child: Column(
                                 children: [
-      
                                   Row(
                                     children: [
-                                      Expanded(child: Padding( //Income for Current Month
-                                        padding: const EdgeInsets.only(left: 10, top: 10),
+                                      Expanded(
+                                          child: Padding(
+                                        //Income for Current Month
+                                        padding: const EdgeInsets.only(
+                                            left: 10, top: 10),
                                         child: Text('Income for $currentMonth'),
                                       )),
-                                      Expanded(child: Padding( //Received Text
-                                        padding: const EdgeInsets.only(left: 160, top: 10, right: 10),
+                                      Expanded(
+                                          child: Padding(
+                                        //Received Text
+                                        padding: const EdgeInsets.only(
+                                            left: 160, top: 10, right: 10),
                                         child: Text('Received'),
                                       )),
                                     ],
                                   ),
-      
-                                  Divider(color: Colors.grey,),
-                                  if (appState.incomeList != []) //Displays Income if list isn't emtpy
-                                    for (var income in appState.incomeList) //Get all income channels
+
+                                  Divider(
+                                    color: Colors.grey,
+                                  ),
+                                  if (appState.incomeList !=
+                                      []) //Displays Income if list isn't emtpy
+                                    for (var income in appState
+                                        .incomeList) //Get all income channels
                                       Row(
                                         children: [
                                           //  Money Icon and Income Text Part
@@ -3834,72 +4076,86 @@ class _BudgetPageState extends State<BudgetPage> {
                                             padding: const EdgeInsets.only(
                                               left: 5,
                                             ),
-                                            child: Icon(Icons.attach_money_rounded, 
-                                            //color: Colors.deepOrangeAccent,
-                                            ),
-                                          ),
-                                          Text(income.replaceAll(RegExp(r'[^A-Z,a-z]'),''),
-                                            style: TextStyle(
+                                            child: Icon(
+                                              Icons.attach_money_rounded,
                                               //color: Colors.deepOrangeAccent,
                                             ),
                                           ),
-      
+                                          Text(
+                                            income.replaceAll(
+                                                RegExp(r'[^A-Z,a-z]'), ''),
+                                            style: TextStyle(
+                                                //color: Colors.deepOrangeAccent,
+                                                ),
+                                          ),
+
                                           //  INCOME EARNINGS
-                                          Expanded( // Aligns it nicely to the right
+                                          Expanded(
+                                            // Aligns it nicely to the right
                                             child: Align(
                                               alignment: Alignment.centerRight,
                                               child: Padding(
-                                                padding: const EdgeInsets.only(right: 30),
-                                                child: Text(income.replaceAll(RegExp(r'[^0-9,.]'),'') // INCOME Button To Delete
-                                                    
-                                                  ),
+                                                padding: const EdgeInsets.only(
+                                                    right: 30),
+                                                child: Text(income.replaceAll(
+                                                        RegExp(r'[^0-9,.]'),
+                                                        '') // INCOME Button To Delete
+
+                                                    ),
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
-      
-                        //  INCOME BOX IF EMPTY
-                        if (appState.incomeList.isEmpty) //Displays message if list IS empty
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: 10,
-                            ),
-                            child: Align(
-                              alignment: Alignment.centerLeft, //aligns container
-                              child: Container(
-                                width: 790,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 1, color: Colors.black.withOpacity(0.5)),
-                                  borderRadius: BorderRadius.all(Radius.circular(5))
-                                ),
-                                child: Align( //aligns everything inside box
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 0,
-                                      right: 0,
-                                      top: 5,
-                                      bottom: 5,
-                                    ),
-                                    child: Row( //Row with No Income Icon and Text
-                                      children: [
-                                        Icon(
-                                          //color: Colors.red,
-                                          Icons.error,
-                                        ),
-                                        Text(" There are no Income Channels",
-                                          style: TextStyle(
-                                            //backgroundColor: Color.fromARGB(255, 214, 209, 209), 
+
+                                  //  INCOME BOX IF EMPTY
+                                  if (appState.incomeList
+                                      .isEmpty) //Displays message if list IS empty
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 10,
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment
+                                            .centerLeft, //aligns container
+                                        child: Container(
+                                          width: 790,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Colors.black
+                                                      .withOpacity(0.5)),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5))),
+                                          child: Align(
+                                            //aligns everything inside box
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 0,
+                                                right: 0,
+                                                top: 5,
+                                                bottom: 5,
+                                              ),
+                                              child: Row(
+                                                  //Row with No Income Icon and Text
+                                                  children: [
+                                                    Icon(
+                                                      //color: Colors.red,
+                                                      Icons.error,
+                                                    ),
+                                                    Text(
+                                                      " There are no Income Channels",
+                                                      style: TextStyle(
+                                                          //backgroundColor: Color.fromARGB(255, 214, 209, 209),
+                                                          ),
+                                                    ),
+                                                  ]),
+                                            ),
                                           ),
                                         ),
-                                      ]
+                                      ),
                                     ),
-                                  ),
-                                  ),
-                              ),
-                            ),
-                          ),  
                                 ],
                               ),
                             ),
@@ -3911,15 +4167,16 @@ class _BudgetPageState extends State<BudgetPage> {
                 ),
               ],
             ),
-      
+
             // EXPENSES FOR MONTH
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(
-                top: 10,
+                  top: 10,
                 ),
-                child: Align( //align container
+                child: Align(
+                  //align container
                   alignment: Alignment.centerLeft,
                   child: Container(
                     width: 500,
@@ -3928,88 +4185,96 @@ class _BudgetPageState extends State<BudgetPage> {
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       color: Colors.grey.withOpacity(0.2),
                     ),
-      
-                    child: Align( //align everything inside box
+                    child: Align(
+                      //align everything inside box
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
-                        width: 780,
-                        child: Column(
-                          children: [
-      
-                            Row(
-                              children: [
-                                Expanded(child: Padding( //Income for Current Month
-                                  padding: const EdgeInsets.only(left: 10, top: 10),
-                                  child: Text('Expenses for $currentMonth'),
-                                )),
-                                Expanded(child: Padding( //Cost Text
-                                  padding: const EdgeInsets.only(left: 184, top: 10),
-                                  child: Text('Cost'),
-                                )),
-                              ],
-                            ),
-      
-                            Divider(color: Colors.grey,),
-      
-                            if (appState.expenseList != []) //Displays Expenses if list isn't emtpy
-                              for (var expense in appState.expenseList) //Get all expenses
-                                Row(
-                                  children: [
-                                    //  Money Icon and Expense Text Part
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 5,
-                                      ),
-                                      child: Icon(Icons.attach_money_rounded, 
-                                      //color: Colors.deepOrangeAccent,
-                                      ),
-                                    ),
-                                    Text(expense.replaceAll(RegExp(r'[^A-Z,a-z]'),''),
-                                      style: TextStyle(
-                                        //color: Colors.deepOrangeAccent,
-                                      ),
-                                    ),
-      
-                                    //  COST OF EXPENSE
-                                    Expanded( // Aligns it nicely to the right
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 30),
-                                          child: Text(expense.replaceAll(RegExp(r'[^0-9,.]'),'') // Expense Button To Delete
-                                              
-                                            ),
+                          width: 780,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Padding(
+                                    //Income for Current Month
+                                    padding: const EdgeInsets.only(
+                                        left: 10, top: 10),
+                                    child: Text('Expenses for $currentMonth'),
+                                  )),
+                                  Expanded(
+                                      child: Padding(
+                                    //Cost Text
+                                    padding: const EdgeInsets.only(
+                                        left: 184, top: 10),
+                                    child: Text('Cost'),
+                                  )),
+                                ],
+                              ),
+                              Divider(
+                                color: Colors.grey,
+                              ),
+                              if (appState.expenseList !=
+                                  []) //Displays Expenses if list isn't emtpy
+                                for (var expense
+                                    in appState.expenseList) //Get all expenses
+                                  Row(
+                                    children: [
+                                      //  Money Icon and Expense Text Part
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 5,
+                                        ),
+                                        child: Icon(
+                                          Icons.attach_money_rounded,
+                                          //color: Colors.deepOrangeAccent,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                          ],
-                        )
-                        ),
+                                      Text(
+                                        expense.replaceAll(
+                                            RegExp(r'[^A-Z,a-z]'), ''),
+                                        style: TextStyle(
+                                            //color: Colors.deepOrangeAccent,
+                                            ),
+                                      ),
+
+                                      //  COST OF EXPENSE
+                                      Expanded(
+                                        // Aligns it nicely to the right
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 30),
+                                            child: Text(expense.replaceAll(
+                                                    RegExp(r'[^0-9,.]'),
+                                                    '') // Expense Button To Delete
+
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                            ],
+                          )),
                     ),
                   ),
                 ),
               ),
-      
             ),
           ],
         ),
       ),
     );
-
   }
 }
 
-class EmptyPage extends StatelessWidget{
-
+class EmptyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    
     var appState = context.watch<MyAppState>();
     var theme = Theme.of(context);
 
     return Scaffold();
-
   }
 }
